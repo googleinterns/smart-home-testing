@@ -13,7 +13,7 @@ function generateSyncReq(){
     return {
         requestId,
         "inputs": [{
-          "intent": "action.devices.SYNC"
+          "intent": action.devices.SYNC
             }]
     }
 }
