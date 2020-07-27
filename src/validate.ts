@@ -1,22 +1,6 @@
 'use strict';
 
-const Ajv = require('ajv'); 
-const ajv = new Ajv();
-const chai = require('chai');
 chai.use(require('chai-json-schema-ajv'));
-
-//calling the JSON schemas to throw assertion errors
-const sync_response_schema = require('../intents/sync.response.schema.json');
-const apiresponse = require('./apiresponse.json');
-
-
-var testsPassed = 0
-var testsFailed = 0
-var totalTests = 0
-
-/**
- * Generate requests to validate the responses later on  
-*/
 
 function generateRandom(min, max){
     //helper function for obtaining a random requestId
@@ -51,7 +35,6 @@ function generateQueryReq(deviceID){
     queryReq.payload.devices[0]["id"] = deviceID;
 
     
-    
     //  for (var i = 0; i <deviceID.length; i++){
     //         queryReq.payload.devices[i]["id"] = deviceID[i];
     //     }
@@ -62,20 +45,7 @@ function generateQueryReq(deviceID){
     
 }
 
-function add(num){
-    var json = [{"cool": num}];
-    json.coolness = 34.33;
-    return json
-}
-
-console.log(add(4));
-console.log(add("5"));
-
-
-const query_request = generateQueryReq("123")["payload"]["devices"];
-
-console.log(query_request)
-// const deviceInfo = (query_request["inputs"][0]["payload"]);
+const deviceInfo = (query_request["inputs"][0]["payload"]);
 
 function generateExecuteReq(traits, attributes){
     return {
@@ -106,24 +76,6 @@ function generateDisconnectReq(){
 }
 
 
-function validate(schema, apiresponse){
-    //this function will validate the responses from the requests 
-    const validate = ajv.compile(schema);
-    var valid = validate(apiresponse);
-    if (!valid) {
-        chai.assert.fail("😠 Test Failed because " +  ajv.errorsText(validate.errors));
-        testsFailed++;
-    } else {
-        chai.assert.isOk(valid, "Test Successful!");
-        testsPassed++;
-    }
-}
 
-
-exports.displayTestResults = function displayTestResults(){
-    totalTests = testsPassed + testsFailed;
-    return totalTests;
-    
-}
 
 
