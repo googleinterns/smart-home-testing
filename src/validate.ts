@@ -23,17 +23,15 @@ function generateRandom(min, max){
     return Math.floor(Math.random() * (max-min) + min).toString();
 }
 
+
 function generateSyncReq(){
     const requestRandId = generateRandom(100,999);
-    const intent = "action.devices.SYNC"
-    
-    var syncReq = {};
-    syncReq.requestId = requestRandId;
-    syncReq.inputs = [];
-    syncReq.inputs.unshift({});
-    syncReq.inputs[0]["intent"] = intent;
-    return syncReq
-
+    return {
+    "requestId": requestRandId,
+    "inputs": [{
+      "intent": "action.devices.SYNC"
+        }]
+    }
 }
 
 const sync_request = generateSyncReq();
@@ -50,42 +48,34 @@ function generateQueryReq(deviceID){
     queryReq.payload = {};
     queryReq.payload.devices = [];
     queryReq.payload.devices.unshift({})
-    queryReq.payload.devices[0]['id'] = deviceID
-    
-    //add custom data so that the user can input this instead
-     
-    return queryReq
+    queryReq.payload.devices[0]["id"] = deviceID;
+
     
     
-//     return {
-//     "requestId": requestId,
-//     "inputs": [{
-//       "intent": "action.devices.QUERY",
-//       "payload": {
-//         "devices": [{
-//           "id": deviceID,
-//           "customData": {
-//             "fooValue": 74,
-//             "barValue": true,
-//             "bazValue": "foo"
-//           }
-//         }, {
-//           "id": "456",
-//           "customData": {
-//             "fooValue": 12,
-//             "barValue": false,
-//             "bazValue": "bar"
-//           }
-//         }]
-//       }
-//     }]
-//   }
+    //  for (var i = 0; i <deviceID.length; i++){
+    //         queryReq.payload.devices[i]["id"] = deviceID[i];
+    //     }
+    //add custom data
+    
+    return queryReq;
+    
+    
 }
 
-const query_request = generateQueryReq("123");
+function add(num){
+    var json = [{"cool": num}];
+    json.coolness = 34.33;
+    return json
+}
+
+console.log(add(4));
+console.log(add("5"));
+
+
+const query_request = generateQueryReq("123")["payload"]["devices"];
 
 console.log(query_request)
-const deviceInfo = (query_request["inputs"][0]["payload"]);
+// const deviceInfo = (query_request["inputs"][0]["payload"]);
 
 function generateExecuteReq(traits, attributes){
     return {
