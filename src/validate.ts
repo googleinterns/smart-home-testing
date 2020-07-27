@@ -11,10 +11,10 @@ function generateRandom(min, max){
 function generateSyncReq(){
     const requestId = generateRandom(100,999);
     return {
-    requestId,
-    "inputs": [{
-      "intent": "action.devices.SYNC"
-        }]
+        requestId,
+        "inputs": [{
+          "intent": "action.devices.SYNC"
+            }]
     }
 }
 
