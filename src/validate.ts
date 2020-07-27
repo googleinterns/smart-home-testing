@@ -9,9 +9,9 @@ function generateRandom(min, max){
 
 
 function generateSyncReq(){
-    const requestRandId = generateRandom(100,999);
+    const requestId = generateRandom(100,999);
     return {
-    "requestId": requestRandId,
+    requestId,
     "inputs": [{
       "intent": "action.devices.SYNC"
         }]
@@ -47,7 +47,7 @@ function generateQueryReq(deviceID){
 
 const deviceInfo = (query_request["inputs"][0]["payload"]);
 
-function generateExecuteReq(traits, attributes){
+function generateExecuteReq(traits, params){
     return {
         "requestId": requestId,
         "inputs": [{
@@ -56,9 +56,7 @@ function generateExecuteReq(traits, attributes){
             "commands": deviceInfo,
               "execution": [{
                 "command": traits,
-                "params": {
-                  "on": true
-                }
+                params;
               }]
           }
         }]
