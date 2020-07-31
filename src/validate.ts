@@ -18,11 +18,8 @@ export function generatSyncRequest(){
 }
 
 
-let deviceIDs: Array<string>;
-
-interface customDatas = {
-    [key: string]: string | number | boolean
-}
+type devicesIds = string[];;
+type customDatas = {[key: string]: any}
 
 export function generateQueryRequest(deviceIds, customDatas){
     const requestId = generateRequestID(100,999);
@@ -38,11 +35,8 @@ export function generateQueryRequest(deviceIds, customDatas){
     }
 }
 
-let commands: Array<string>;
-interface params = {
-    [key: string]: string | number | boolean
-}
-
+type commands = string[]
+type params = {[key: string]: any}
 
 export function generateExecuteRequest(deviceIds, customDatas, commands, params){
     const requestId = generateRequestID(100,999);
