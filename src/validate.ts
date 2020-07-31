@@ -7,7 +7,7 @@ function generateRequestID(min, max){
 }
     
 
-export function generatSyncRequest(){
+export function generateSyncRequest(){
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -18,10 +18,14 @@ export function generatSyncRequest(){
 }
 
 
-type devicesIds = string[];;
 type customDatas = {[key: string]: any}
 
-export function generateQueryRequest(deviceIds, customDatas){
+interface QueryRequest{
+    requestId: string;
+    inputs: Array<QueryRequest>;
+}
+
+export function generateQueryRequest(deviceIds: string[], customDatas[]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -29,16 +33,21 @@ export function generateQueryRequest(deviceIds, customDatas){
           intent: "action.devices.QUERY",
           payload: {
             devices: devicesIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customDatas[1]}))
+                ({id: deviceId, customData: customDatas[index]}))
             }
         }]
     }
 }
 
-type commands = string[]
+
 type params = {[key: string]: any}
 
-export function generateExecuteRequest(deviceIds, customDatas, commands, params){
+interface ExecuteRequest{
+    requestId: string;
+    inputs: Array<ExecuteRequest>;  
+}
+
+export function generateExecuteRequest(deviceIds: string[], customDatas[], commands: string[], params[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -46,9 +55,9 @@ export function generateExecuteRequest(deviceIds, customDatas, commands, params)
           intent: "action.devices.EXECUTE",
           payload: {
             devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customDatas[1]})),
+                ({id: deviceId, customData: customDatas[index]})),
             execution: commands.map((command, index) =>
-                ({command: command, params: params[1]}))
+                ({command: command, params: params[index]}))
             }
         }]
     }
