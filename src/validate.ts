@@ -22,17 +22,19 @@ type customDatas = {[key: string]: any}
 
 interface QueryRequest{
     requestId: string;
-    inputs: Array<QueryRequest>;
+    inputs: {
+     intent: string; payload: { devices: { id: string; customData: customDatas; }[]; };
+    }[];
 }
 
-export function generateQueryRequest(deviceIds: string[], customDatas[]) : QueryRequest{
+export function generateQueryRequest(deviceIds: string[],customDatas: customDatas[]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
         inputs: [{
           intent: "action.devices.QUERY",
           payload: {
-            devices: devicesIds.map((deviceId, index) =>
+            devices: deviceIds.map((deviceId, index) =>
                 ({id: deviceId, customData: customDatas[index]}))
             }
         }]
@@ -44,10 +46,18 @@ type params = {[key: string]: any}
 
 interface ExecuteRequest{
     requestId: string;
-    inputs: Array<ExecuteRequest>;  
+    inputs: { 
+     intent: string; 
+     payload: 
+     { devices: 
+        { id: string; 
+        customData: customDatas;}[];
+    execution: { command: string; params: params; }[];
+    }; 
+    }[];
 }
 
-export function generateExecuteRequest(deviceIds: string[], customDatas[], commands: string[], params[]): ExecuteRequest{
+export function generateExecuteRequest(deviceIds: string[], customDatas: customDatas[], commands: string[], params: params[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
