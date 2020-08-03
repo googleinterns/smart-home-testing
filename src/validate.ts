@@ -2,11 +2,19 @@
 'use-strict';
 
 
+
+ /**
+ * Generates random request ID
+ */
+
 function generateRequestID(min, max){
+    
         return Math.floor(Math.random() * (max-min) + min).toString()
 }
     
-
+ /**
+ * Generating JSON request payloads for SYNC, QUERY, EXECUTE, and DISCONNECT intents
+ */
 export function generateSyncRequest(){
     const requestId = generateRequestID(100,999);
     return {
@@ -18,7 +26,7 @@ export function generateSyncRequest(){
 }
 
 
-type customDatas = {[key: string]: any}
+type CustomData = {[key: string]: any}
 
 interface QueryRequest{
     requestId: string;
