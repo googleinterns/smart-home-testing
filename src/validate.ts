@@ -64,7 +64,7 @@ interface ExecuteRequest{
      { devices: 
         { id: string; 
         customData: CustomData;}[];
-    execution: { command: string; params: params; }[];
+    execution: { command: string; params: Params; }[];
     }; 
     }[];
 }
