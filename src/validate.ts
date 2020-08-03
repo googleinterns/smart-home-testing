@@ -1,8 +1,6 @@
 
 'use-strict';
 
-
-
  /**
  * Generates random request ID
  */
@@ -25,17 +23,16 @@ export function generateSyncRequest(){
     }
 }
 
-
 type CustomData = {[key: string]: any}
 
 interface QueryRequest{
     requestId: string;
     inputs: {
-     intent: string; payload: { devices: { id: string; CustomData: CustomData; }[]; };
+     intent: string; payload: { devices: { id: string; customData: CustomData; }[]; };
     }[];
 }
 
-export function generateQueryRequest(deviceIds: string[],CustomData: CustomData[]) : QueryRequest{
+export function generateQueryRequest(deviceIds: string[],customData: CustomData[]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -43,7 +40,7 @@ export function generateQueryRequest(deviceIds: string[],CustomData: CustomData[
           intent: "action.devices.QUERY",
           payload: {
             devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, CustomData: CustomData[index]}))
+                ({id: deviceId, customData: CustomData[index]}))
             }
         }]
     }
@@ -59,13 +56,13 @@ interface ExecuteRequest{
      payload: 
      { devices: 
         { id: string; 
-        CustomData: CustomData;}[];
+        customData: CustomData;}[];
     execution: { command: string; params: params; }[];
     }; 
     }[];
 }
 
-export function generateExecuteRequest(deviceIds: string[], CustomData: CustomData[], commands: string[], params: params[]): ExecuteRequest{
+export function generateExecuteRequest(deviceIds: string[], customData: CustomData[], commands: string[], params: params[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -73,7 +70,7 @@ export function generateExecuteRequest(deviceIds: string[], CustomData: CustomDa
           intent: "action.devices.EXECUTE",
           payload: {
             devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, CustomData: CustomData[index]})),
+                ({id: deviceId, customData: CustomData[index]})),
             execution: commands.map((command, index) =>
                 ({command: command, params: params[index]}))
             }
