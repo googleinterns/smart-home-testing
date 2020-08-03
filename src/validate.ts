@@ -40,7 +40,7 @@ export function generateQueryRequest(deviceIds: string[],customData: CustomData[
           intent: "action.devices.QUERY",
           payload: {
             devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: CustomData[index]}))
+                ({id: deviceId, customData: customData[index]}))
             }
         }]
     }
@@ -70,7 +70,7 @@ export function generateExecuteRequest(deviceIds: string[], customData: CustomDa
           intent: "action.devices.EXECUTE",
           payload: {
             devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: CustomData[index]})),
+                ({id: deviceId, customData: customData[index]})),
             execution: commands.map((command, index) =>
                 ({command: command, params: params[index]}))
             }
@@ -89,5 +89,3 @@ export function generateDisconnectRequest(){
         }]
     }
 }
-
-
