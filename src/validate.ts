@@ -2,8 +2,8 @@
 
 /**
  * Generates random request ID 
- * @min minimum number
- * @max maximum number 
+ * @param min Minimum number
+ * @param max Maximum number 
  * @returns Returns the random number between the range of the min to max number specified
  */
 function generateRequestID(min, max){
@@ -35,8 +35,8 @@ interface QueryRequest{
 
 /**
  * Generates QUERY request 
- * @deviceIds array of strings specifying the device deviceIds
- * @customData an array of data for the respective devices specified by the developer 
+ * @param deviceIds array of strings specifying the device deviceIds
+ * @param customData an array of data for the respective devices specified by the developer 
  * @returns returns specified format for QUERY intent request. 
  */
 export function generateQueryRequest(deviceIds: string[],customData: CustomData[]) : QueryRequest{
@@ -71,10 +71,10 @@ interface ExecuteRequest{
 
 /**
  * Generates EXECUTE request 
- * @deviceIds array of strings specifying the device deviceIds
- * @customData an array of data for the respective devices specified by the developer 
- * @commands array of strings specifying the commands 
- * @params array of parameters based on the respective specified commands 
+ * @param deviceIds Array of strings specifying the device deviceIds
+ * @param customData Array of data for the respective devices specified by the developer 
+ * @param commands Array of strings specifying the commands 
+ * @param params Array of parameters based on the respective specified commands 
  * @returns returns specified format for EXECUTE intent request. 
  */
 export function generateExecuteRequest(deviceIds: string[], customData: CustomData[], commands: string[], params: Params[]): ExecuteRequest{
