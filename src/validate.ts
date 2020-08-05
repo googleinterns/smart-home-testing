@@ -1,7 +1,5 @@
 'use-strict';
 
-const Ajv = require('ajv');
-
 /**
  * Generates random request ID 
  * @param min Minimum number
@@ -122,14 +120,3 @@ export function generateDisconnectRequest(){
         }]
     }
 }
-
-type ApiResponse = {[key: string]: any}
-type Schema = {[key: string]: any}
-
-export function validate(apiResponse: ApiResponse, schema: Schema){
-    let ajv = new Ajv();
-    let validate = ajv.compile(schema)
-    let valid = validate(apiResponse);
-    return valid
-}
-
