@@ -8,10 +8,10 @@ const Ajv = require('ajv');
  * @param max Maximum number 
  * @returns Random number between the range of the min to max number specified
  */
-function generateRequestID(min, max){
+function generateRequestID(min: number, max: number){
      return Math.floor(Math.random() * (max-min) + min).toString()
 }
-    
+
 /**
  * Generates SYNC request 
  * @returns Specified format for SYNC intent request. 
@@ -66,7 +66,7 @@ interface ExecuteRequest{
         { id: string; 
         customData: CustomData;}[];
     execution: { command: string; params: Params; }[];
-    }; 
+       }; 
     }[];
 }
 
@@ -78,7 +78,6 @@ interface ExecuteRequest{
  * @param params Array of parameters based on the respective specified commands 
  * @returns Specified format for EXECUTE intent request. 
  */
- 
 export function generateExecuteRequest(deviceIds: string[], customData: CustomData[], commands: string[], params: Params[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
@@ -109,12 +108,13 @@ export function generateDisconnectRequest(){
     }
 }
 
-export function validate(api_response, schema){
+type ApiResponse = {[key: string]: any}
+type Schema = {[key: string]: any}
+
+export function validate(apiResponse: ApiResponse, schema: Schema){
     let ajv = new Ajv();
     let validate = ajv.compile(schema)
-    let valid = validate(api_response);
-    if (!valid) ajv.errorsText(validate.errors);
+    let valid = validate(apiResponse);
+    return valid
 }
-
-
 
