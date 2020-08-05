@@ -1,15 +1,17 @@
 'use-strict';
 
+const Ajv = require('ajv');
+
 /**
  * Generates random request ID 
  * @param min Minimum number
  * @param max Maximum number 
  * @returns Random number between the range of the min to max number specified
  */
-function generateRequestID(min, max){
+function generateRequestID(min: number, max: number){
      return Math.floor(Math.random() * (max-min) + min).toString()
 }
-    
+
 /**
  * Generates SYNC request 
  * @returns Specified format for SYNC intent request. 
@@ -24,12 +26,21 @@ export function generateSyncRequest(){
     }
 }
 
-type CustomData = {[key: string]: any}
+interface Device {
+  id: string[],
+  customData?: {[key: string]: any}
+}
 
 interface QueryRequest{
     requestId: string;
     inputs: {
-     intent: string; payload: { devices: { id: string; customData: CustomData; }[]; };
+     intent: string; 
+     payload: {
+         devices: {
+             id: string; 
+             customData: Device["customData"];
+        }[]; 
+     };
     }[];
 }
 
@@ -39,7 +50,7 @@ interface QueryRequest{
  * @param customData an array of data for the respective devices specified by the developer 
  * @returns Specified format for QUERY intent request. 
  */
-export function generateQueryRequest(deviceIds: string[],customData: CustomData[]) : QueryRequest{
+export function generateQueryRequest(deviceIds: Device["id"],customData: Device["customData"]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -54,7 +65,10 @@ export function generateQueryRequest(deviceIds: string[],customData: CustomData[
 }
 
 
-type Params = {[key: string]: any}
+interface Command{
+    name: string[],
+    params?: {[key: string]: any}
+}
 
 interface ExecuteRequest{
     requestId: string;
@@ -63,9 +77,11 @@ interface ExecuteRequest{
      payload: 
      { devices: 
         { id: string; 
-        customData: CustomData;}[];
-    execution: { command: string; params: Params; }[];
-    }; 
+        customData: Device["customData"];}[];
+    execution: { 
+        command: string; 
+        params: Command["params"];}[];
+       }; 
     }[];
 }
 
@@ -77,7 +93,7 @@ interface ExecuteRequest{
  * @param params Array of parameters based on the respective specified commands 
  * @returns Specified format for EXECUTE intent request. 
  */
-export function generateExecuteRequest(deviceIds: string[], customData: CustomData[], commands: string[], params: Params[]): ExecuteRequest{
+export function generateExecuteRequest(deviceIds: Device["id"], customData: Device["customData"], commands: Command["name"], params:Command["params"]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
@@ -93,7 +109,6 @@ export function generateExecuteRequest(deviceIds: string[], customData: CustomDa
     }
 }
 
-
 /**
  * Generates DISCONNECT request 
  * @returns Specified format for DISCONNECT intent request. 
@@ -106,5 +121,15 @@ export function generateDisconnectRequest(){
           intent: "action.devices.DISCONNECT"
         }]
     }
+}
+
+type ApiResponse = {[key: string]: any}
+type Schema = {[key: string]: any}
+
+export function validate(apiResponse: ApiResponse, schema: Schema){
+    let ajv = new Ajv();
+    let validate = ajv.compile(schema)
+    let valid = validate(apiResponse);
+    return valid
 }
 
