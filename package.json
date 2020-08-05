@@ -27,11 +27,15 @@
   },
   "homepage": "https://github.com/googleinterns/smart-home-testing#readme",
   "devDependencies": {
+    "@types/node": "^13.11.1",
     "gts": "^2.0.2",
-    "typescript": "^3.8.3",
-    "@types/node": "^13.11.1"
+    "mocha-param": "^2.0.1",
+    "typescript": "^3.8.3"
   },
   "dependencies": {
-    "ajv": "^6.12.3"
+    "ajv": "^6.12.3",
+    "chai": "^4.2.0",
+    "smart-home-testing": "^1.0.0"
   }
+  
 }
