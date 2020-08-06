@@ -25,21 +25,20 @@ export function generateSyncRequest(){
 }
 
 interface Device {
-  id: string[],
-  customData?: {[key: string]: any}
+  id: string;
+  customData?: {[key: string]: any};
 }
 
-interface QueryRequest{
-    requestId: string;
-    inputs: {
-     intent: string; 
-     payload: {
-         devices: {
-             id: string; 
-             customData: Device["customData"];
-        }[]; 
-     };
-    }[];
+interface QueryInput {
+  intent: string; 
+  payload: {
+    devices: Device[]; 
+  };
+}
+
+interface QueryRequest {
+  requestId: string;
+  inputs: QueryInput[];
 }
 
 /**
@@ -48,15 +47,14 @@ interface QueryRequest{
  * @param customData an array of data for the respective devices specified by the developer 
  * @returns Specified format for QUERY intent request. 
  */
-export function generateQueryRequest(deviceIds: Device["id"],customData: Device["customData"]) : QueryRequest{
+export function generateQueryRequest(devices: Device[]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
         inputs: [{
           intent: "action.devices.QUERY",
           payload: {
-            devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customData[index]}))
+            devices
             }
         }]
     }
@@ -68,19 +66,17 @@ interface Command{
     params?: {[key: string]: any}
 }
 
+interface ExecuteInput{
+    intent: string;
+    payload: {
+        devices: Device[];
+        execution: Command[];
+    };
+}
+
 interface ExecuteRequest{
     requestId: string;
-    inputs: { 
-     intent: string; 
-     payload: 
-     { devices: 
-        { id: string; 
-        customData: Device["customData"];}[];
-    execution: { 
-        command: string; 
-        params: Command["params"];}[];
-       }; 
-    }[];
+    inputs: ExecuteInput[];
 }
 
 /**
@@ -91,18 +87,16 @@ interface ExecuteRequest{
  * @param params Array of parameters based on the respective specified commands 
  * @returns Specified format for EXECUTE intent request. 
  */
-export function generateExecuteRequest(deviceIds: Device["id"], customData: Device["customData"], commands: Command["name"], params:Command["params"]): ExecuteRequest{
+export function generateExecuteRequest(devices: Device[], execution: Command[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
         inputs: [{
           intent: "action.devices.EXECUTE",
           payload: {
-            devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customData[index]})),
-            execution: commands.map((command, index) =>
-                ({command: command, params: params[index]}))
-            }
+            devices,
+            execution
+          }
         }]
     }
 }
