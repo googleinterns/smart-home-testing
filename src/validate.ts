@@ -62,7 +62,7 @@ export function generateQueryRequest(devices: Device[]) : QueryRequest{
 
 
 interface Command{
-    name: string[],
+    name: string,
     params?: {[key: string]: any}
 }
 
