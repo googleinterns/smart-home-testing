@@ -44,7 +44,7 @@ interface QueryRequest {
 
 /**
  * Generates QUERY request 
- * @param devices Array of strings of type Device.
+ * @param devices Array of type Device containing device IDs and respective custom data
  * @returns Specified format for QUERY intent request. 
  */
 export function generateQueryRequest(devices: Device[]) : QueryRequest{
@@ -81,7 +81,7 @@ interface ExecuteRequest{
 
 /**
  * Generates EXECUTE request 
- * @param devices Array of strings of type Device 
+ * @param devices Array of type Device containing device IDs and respective custom data 
  * @param execution Array of type Command specifying the commands of the devices and their respective parameters 
  * @returns Specified format for EXECUTE intent request. 
  */
