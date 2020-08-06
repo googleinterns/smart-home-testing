@@ -1,5 +1,6 @@
 'use-strict';
 
+const ajv =  require('Ajv');
 /**
  * Generates random request ID 
  * @param min Minimum number
@@ -43,8 +44,7 @@ interface QueryRequest {
 
 /**
  * Generates QUERY request 
- * @param deviceIds array of strings specifying the device deviceIds
- * @param customData an array of data for the respective devices specified by the developer 
+ * @param devices Array of strings of type Device.
  * @returns Specified format for QUERY intent request. 
  */
 export function generateQueryRequest(devices: Device[]) : QueryRequest{
@@ -81,10 +81,8 @@ interface ExecuteRequest{
 
 /**
  * Generates EXECUTE request 
- * @param deviceIds Array of strings specifying the device deviceIds
- * @param customData Array of data for the respective devices specified by the developer 
- * @param commands Array of strings specifying the commands 
- * @param params Array of parameters based on the respective specified commands 
+ * @param devices Array of strings of type Device 
+ * @param execution Array of type Command specifying the commands of the devices and their respective parameters 
  * @returns Specified format for EXECUTE intent request. 
  */
 export function generateExecuteRequest(devices: Device[], execution: Command[]): ExecuteRequest{
