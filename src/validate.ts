@@ -1,6 +1,5 @@
 'use-strict';
 
-const ajv =  require('Ajv');
 /**
  * Generates random request ID 
  * @param min Minimum number
