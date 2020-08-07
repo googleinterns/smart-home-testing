@@ -1,7 +1,6 @@
 'use-strict';
 
-const Ajv = require('ajv');
-
+const Ajv =  require('ajv');
 /**
  * Generates random request ID 
  * @param min Minimum number
@@ -26,70 +25,76 @@ export function generateSyncRequest(){
     }
 }
 
-type CustomData = {[key: string]: any}
+interface Device {
+  id: string;
+  customData?: {[key: string]: any};
+}
 
-interface QueryRequest{
-    requestId: string;
-    inputs: {
-     intent: string; payload: { devices: { id: string; customData: CustomData; }[]; };
-    }[];
+interface QueryInput {
+  intent: string; 
+  payload: {
+    devices: Device[]; 
+  };
+}
+
+interface QueryRequest {
+  requestId: string;
+  inputs: QueryInput[];
 }
 
 /**
  * Generates QUERY request 
- * @param deviceIds array of strings specifying the device deviceIds
- * @param customData an array of data for the respective devices specified by the developer 
+ * @param devices Array of type Device containing device IDs and respective custom data
  * @returns Specified format for QUERY intent request. 
  */
-export function generateQueryRequest(deviceIds: string[],customData: CustomData[]) : QueryRequest{
+export function generateQueryRequest(devices: Device[]) : QueryRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
         inputs: [{
           intent: "action.devices.QUERY",
           payload: {
-            devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customData[index]}))
+            devices
             }
         }]
     }
 }
 
 
-type Params = {[key: string]: any}
+interface Command{
+    name: string,
+    params?: {[key: string]: any}
+}
+
+interface ExecuteInput{
+    intent: string;
+    payload: {
+        devices: Device[];
+        execution: Command[];
+    };
+}
+
 interface ExecuteRequest{
     requestId: string;
-    inputs: { 
-     intent: string; 
-     payload: 
-     { devices: 
-        { id: string; 
-        customData: CustomData;}[];
-    execution: { command: string; params: Params; }[];
-       }; 
-    }[];
+    inputs: ExecuteInput[];
 }
 
 /**
  * Generates EXECUTE request 
- * @param deviceIds Array of strings specifying the device deviceIds
- * @param customData Array of data for the respective devices specified by the developer 
- * @param commands Array of strings specifying the commands 
- * @param params Array of parameters based on the respective specified commands 
+ * @param devices Array of type Device containing device IDs and respective custom data 
+ * @param execution Array of type Command specifying the commands of the devices and their respective parameters 
  * @returns Specified format for EXECUTE intent request. 
  */
-export function generateExecuteRequest(deviceIds: string[], customData: CustomData[], commands: string[], params: Params[]): ExecuteRequest{
+export function generateExecuteRequest(devices: Device[], execution: Command[]): ExecuteRequest{
     const requestId = generateRequestID(100,999);
     return {
         requestId,
         inputs: [{
           intent: "action.devices.EXECUTE",
           payload: {
-            devices: deviceIds.map((deviceId, index) =>
-                ({id: deviceId, customData: customData[index]})),
-            execution: commands.map((command, index) =>
-                ({command: command, params: params[index]}))
-            }
+            devices,
+            execution
+          }
         }]
     }
 }
@@ -109,12 +114,27 @@ export function generateDisconnectRequest(){
 }
 
 type ApiResponse = {[key: string]: any}
-type Schema = {[key: string]: any}
+let ajv = new Ajv();
+let sync_response_schema = require('../intents/sync.response.schema.json')
 
-export function validate(apiResponse: ApiResponse, schema: Schema){
-    let ajv = new Ajv();
-    let validate = ajv.compile(schema)
-    let valid = validate(apiResponse);
-    return valid
+function isSyncResponse(apiResponse: ApiResponse){
+    let valid = ajv.validate(sync_response_schema, apiResponse);
+    if (valid){
+        return true 
+    } else {
+        return false
+    }
 }
 
+function syncResponseValidate(apiResponse: ApiResponse){
+    let valid = ajv.validate(sync_response_schema, apiResponse);
+    if (isSyncResponse(apiResponse) == true){
+        return console.log("Sync Response Validated") 
+    } else if (isSyncResponse(apiResponse) == false){
+        return ajv.errors
+    }
+}
+
+export function validate(apiResponse: ApiResponse){
+    return syncResponseValidate(apiResponse)
+}
