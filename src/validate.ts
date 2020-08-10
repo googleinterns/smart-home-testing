@@ -112,7 +112,6 @@ export function generateDisconnectRequest(){
         }]
     }
 }
-
 type ApiResponse = {[key: string]: any}
 let ajv = new Ajv();
 let sync_response_schema = require('../intents/sync.response.schema.json')
