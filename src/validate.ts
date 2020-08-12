@@ -1,6 +1,6 @@
 'use-strict';
+import * as Ajv from 'ajv';
 
-const Ajv =  require('ajv');
 /**
  * Generates random request ID 
  * @param min Minimum number
@@ -112,28 +112,14 @@ export function generateDisconnectRequest(){
         }]
     }
 }
+
 type ApiResponse = {[key: string]: any}
-let ajv = new Ajv();
-let sync_response_schema = require('../intents/sync.response.schema.json')
-
-function isSyncResponse(apiResponse: ApiResponse){
-    let valid = ajv.validate(sync_response_schema, apiResponse);
-    if (valid){
-        return true 
-    } else {
-        return false
+const sync_response_schema = require('../intents/sync.response.schema.json');
+export function validate(apiResponse: ApiResponse, responseType: string){
+    let ajv = Ajv();
+    if (responseType == "SYNC"){
+        var valid = ajv.validate(sync_response_schema, apiResponse);
+        if (!valid) return (ajv.errors);
     }
-}
-
-function syncResponseValidate(apiResponse: ApiResponse){
-    let valid = ajv.validate(sync_response_schema, apiResponse);
-    if (isSyncResponse(apiResponse) == true){
-        return console.log("Sync Response Validated") 
-    } else if (isSyncResponse(apiResponse) == false){
-        return ajv.errors
-    }
-}
-
-export function validate(apiResponse: ApiResponse){
-    return syncResponseValidate(apiResponse)
+    return;
 }
