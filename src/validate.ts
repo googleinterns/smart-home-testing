@@ -6,9 +6,18 @@ const ajv = new Ajv({
 });
 
 /**
- * Helper function that uses AJV library to validate the response against the schema 
+ * Helper function that throws an error with a custom message
+ * @param message Error message defined 
+ * @return Throws an error with a message 
+ */
+function throwError(message: string): never {
+    throw new Error(message);
+}
+
+/**
+ * Helper function that uses AJV library to validate the response against the schema
  * @param apiResponse User defined api response
- * @return Returns undefined if valid is true, returns an array of error(s) if valid is false. 
+ * @return Returns undefined if valid is true, returns an array of error(s) if valid is false.
  */
 function validateSyncResponse(apiResponse: object) {
   const syncResponseSchema = require('../intents/sync.response.schema.json');
@@ -21,13 +30,13 @@ function validateSyncResponse(apiResponse: object) {
 
 /**
  * Identifies the response type and validates the function based on the schemas.
- * @param apiResponse User defined api response 
- * @param responseType User defined intent response 
- * @return Errors from AJV validation, if any. Undefined otherwise. 
+ * @param apiResponse User defined api response
+ * @param responseType User defined intent response
+ * @return Errors from AJV validation, if any. Undefined otherwise.
  */
 export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
-  if (responseType == 'sync') {
+  if (responseType === 'sync') {
     return validateSyncResponse(apiResponse);
   }
-  return undefined;
+  return throwError('Response type not specified');
 }
