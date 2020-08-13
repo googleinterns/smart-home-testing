@@ -1,125 +1,22 @@
 'use-strict';
 import * as Ajv from 'ajv';
 
-/**
- * Generates random request ID 
- * @param min Minimum number
- * @param max Maximum number 
- * @returns Random number between the range of the min to max number specified
- */
-function generateRequestID(min: number, max: number){
-     return Math.floor(Math.random() * (max-min) + min).toString()
-}
+const ajv = new Ajv({
+    allErrors:true
+});
 
-/**
- * Generates SYNC request 
- * @returns Specified format for SYNC intent request. 
- */
-export function generateSyncRequest(){
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.SYNC"
-        }]
+export function validateSyncResponse(apiResponse: object) {
+    const sync_response_schema = require('../intents/sync.response.schema.json')
+    const isValid = ajv.validate(sync_response_schema, apiResponse)
+    if (isValid) {
+        return undefined
     }
+    return ajv.errors
 }
 
-interface Device {
-  id: string;
-  customData?: {[key: string]: any};
-}
-
-interface QueryInput {
-  intent: string; 
-  payload: {
-    devices: Device[]; 
-  };
-}
-
-interface QueryRequest {
-  requestId: string;
-  inputs: QueryInput[];
-}
-
-/**
- * Generates QUERY request 
- * @param devices Array of type Device containing device IDs and respective custom data
- * @returns Specified format for QUERY intent request. 
- */
-export function generateQueryRequest(devices: Device[]) : QueryRequest{
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.QUERY",
-          payload: {
-            devices
-            }
-        }]
+export function validate(apiResponse: object, responseType:  'sync' | 'query'|'execute'| 'disconnect'){
+    if (responseType == 'sync'){
+        return validateSyncResponse(apiResponse);
     }
-}
-
-
-interface Command{
-    name: string,
-    params?: {[key: string]: any}
-}
-
-interface ExecuteInput{
-    intent: string;
-    payload: {
-        devices: Device[];
-        execution: Command[];
-    };
-}
-
-interface ExecuteRequest{
-    requestId: string;
-    inputs: ExecuteInput[];
-}
-
-/**
- * Generates EXECUTE request 
- * @param devices Array of type Device containing device IDs and respective custom data 
- * @param execution Array of type Command specifying the commands of the devices and their respective parameters 
- * @returns Specified format for EXECUTE intent request. 
- */
-export function generateExecuteRequest(devices: Device[], execution: Command[]): ExecuteRequest{
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.EXECUTE",
-          payload: {
-            devices,
-            execution
-          }
-        }]
-    }
-}
-
-/**
- * Generates DISCONNECT request 
- * @returns Specified format for DISCONNECT intent request. 
- */
-export function generateDisconnectRequest(){
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.DISCONNECT"
-        }]
-    }
-}
-
-type ApiResponse = {[key: string]: any}
-const sync_response_schema = require('../intents/sync.response.schema.json');
-export function validate(apiResponse: ApiResponse, responseType: string){
-    let ajv = Ajv();
-    if (responseType == "SYNC"){
-        var valid = ajv.validate(sync_response_schema, apiResponse);
-        if (!valid) return (ajv.errors);
-    }
-    return;
+    return undefined;
 }
