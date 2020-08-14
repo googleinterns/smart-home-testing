@@ -92,7 +92,7 @@ app.onSync((body) => {
 });
 
 // Test passes, using the defined schema 
-test(Sync Response passes', async () => {
+test('Sync Response passes', async () => {
   const exampleSyncRes = require('./example.sync.response.json');
   const noErrors = testlib.validate(exampleSyncRes, 'sync');
   expect(noErrors).toBe(undefined);
