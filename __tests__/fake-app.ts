@@ -83,3 +83,60 @@ export function onSync(body){
       }
     }
 }
+
+export function onQuery(body){
+  {
+  "requestId": "ff36a3cc-ec34-11e6-b1a0-64510650abcf",
+  "payload": {
+    "devices": {
+      "123": {
+        "on": true,
+        "online": true,
+        "status": "SUCCESS"
+      },
+      "456": {
+        "on": true,
+        "online": true,
+        "status": "SUCCESS",
+        "brightness": 80,
+        "color": {
+          "name": "cerulean",
+          "spectrumRGB": 31655
+          }
+        }
+      } 
+    }
+  }
+}
+
+export function onExecute(body){
+    {
+      "requestId": "ff36a3cc-ec34-11e6-b1a0-64510650abcf",
+      "payload": {
+        "commands": [
+          {
+            "ids": [
+              "123"
+            ],
+            "status": "SUCCESS",
+            "states": {
+              "on": true,
+              "online": true
+            }
+          },
+          {
+            "ids": [
+              "456"
+            ],
+            "status": "ERROR",
+            "errorCode": "deviceTurnedOff"
+          }
+        ]
+      }
+    }
+}
+
+export function onDisconnect(body){
+    //User unlinked their account, stop reporting state for the user
+    return {}
+}
