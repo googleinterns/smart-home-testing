@@ -3,17 +3,17 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-// Test passes, using the defined schema 
+// Test passes, using the defined schema
 test('Sync Response passes', async () => {
   const exampleSyncRes = require('./example.sync.response.json');
   const noErrors = testlib.validate(exampleSyncRes, 'sync');
   expect(noErrors).toBe(undefined);
 });
 
-//Test passes
+// Test passes
 test('Sync Response using actions an intent handler', async () =>{
   const reqSync = testreq.generateSyncRequest();
-  const res = fakeapp.onSync(reqSync)
+  const res = fakeapp.onSync(reqSync);
   const testlibValid = testlib.validate(res, 'sync');
   expect(testlibValid).toBe(undefined);
 });
@@ -26,31 +26,31 @@ test('Sync Response fails', async () => {
 });
 
 const devices = [{
-          "id": "123",
-          "customData": {
-            "fooValue": 74,
-            "barValue": true,
-            "bazValue": "foo"
-          }
-        }, {
-          "id": "456",
-          "customData": {
-            "fooValue": 12,
-            "barValue": false,
-            "bazValue": "bar"
-          }
-        }];
+  'id': '123',
+  'customData': {
+    'fooValue': 74,
+    'barValue': true,
+    'bazValue': 'foo',
+  },
+}, {
+  'id': '456',
+  'customData': {
+    'fooValue': 12,
+    'barValue': false,
+    'bazValue': 'bar',
+  },
+}];
 
-const execution = 
-    [{"command": "action.devices.commands.OnOff",
-      "params": {
-        "on": true
-       }
+const execution =
+    [{'command': 'action.devices.commands.OnOff',
+      'params': {
+        'on': true,
+      },
     }];
 
 test('Execute Response using actions an intent handler', async () =>{
   const reqExec = testreq.generateExecuteRequest(devices, execution);
-  const res = fakeapp.onExecute(reqExec)
+  const res = fakeapp.onExecute(reqExec);
   const testlibValid = testlib.validate(res, 'execute');
   expect(testlibValid).toBe(undefined);
 });
