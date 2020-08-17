@@ -111,6 +111,5 @@ test('Sync Response using actions an intent handler', async () =>{
 test('Sync Response fails', async () => {
   const exampleSyncResFail = require('./example.sync.response.fail.json');
   const syncErrors = testlib.validate(exampleSyncResFail, 'sync');
-  console.log(syncErrors);
-  expect(syncErrors && syncErrors.join('\n')).toBeFalsy();
+  expect(syncErrors).toBeFalsy();
 });
