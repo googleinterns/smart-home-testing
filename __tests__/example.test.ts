@@ -41,14 +41,6 @@ const devices = [{
   },
 }];
 
-//Test passes, Query response 
-test('Query Response using actions an intent handler', async () =>{
-  const reqQuery = testreq.generateQueryRequest(devices);
-  const res = fakeapp.onExecute(reqQuery);
-  const testlibValid = testlib.validate(res, 'query');
-  expect(testlibValid).toBe(undefined);
-});
-
 const execution =
     [{'command': 'action.devices.commands.OnOff',
       'params': {
