@@ -38,12 +38,11 @@ export function validate(apiResponse: object, responseType: 'sync' | 'query'|'ex
   } else if (responseType == 'query') {
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {
-    const COMMANDS = EXECUTE_RESPONSE_SCHEMA["payload"]["commands"];
+    const COMMANDS = apiResponse["payload"]["commands"];
     const COMMANDS_LENGTH = COMMANDS.length;     
     for(let i = 0; i <= COMMANDS_LENGTH; i++){
-        const IS_ON = COMMANDS[i]["states"]["on"];
-        const IS_ONLINE = COMMANDS[i]["states"]["online"];
-        return [responseValidation(IS_ON, ON_OFF_STATES_SCHEMA), responseValidation(IS_ONLINE, ON_OFF_STATES_SCHEMA)];
+        const STATES = COMMANDS[i]["states"];
+        return responseValidation(STATES, ON_OFF_STATES_SCHEMA);
     }
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
