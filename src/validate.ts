@@ -5,17 +5,17 @@ const ajv = new Ajv({
   allErrors: true,
 });
 
-const syncResponseSchema = require('../intents/sync.response.schema.json');
-const queryResponseSchema = require('../intents/query.response.schema.json');
-const executeResponseSchema = require('../intents/execute.response.schema.json');
-const disconnectResponseSchema = require('../intents/disconnect.response.schema.json');
+const SYNC_RESPONSE_SCHEMA = require('../intents/sync.response.schema.json');
+const QUERY_RESPONSE_SCHEMA = require('../intents/query.response.schema.json');
+const EXECUTE_RESPONSE_SCHEMA = require('../intents/execute.response.schema.json');
+const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schema.json');
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
  * @param apiResponse User defined api response
  * @return Returns undefined if valid is true, returns an array of error(s) if valid is false.
  */
-function responseValidation(apiResponse: object, schema: object) {
+function responseValidation(apiResponse: any, schema: any) {
   const isValid = ajv.validate(schema, apiResponse);
   if (isValid) {
     return undefined;
@@ -29,7 +29,7 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
+export function validate(apiResponse: any, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
   if (responseType === 'sync') {
     return responseValidation(apiResponse, syncResponseSchema);
   } else if (responseType == 'query') {
