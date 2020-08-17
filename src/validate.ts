@@ -9,9 +9,6 @@ const SYNC_RESPONSE_SCHEMA = require('../intents/sync.response.schema.json');
 const QUERY_RESPONSE_SCHEMA = require('../intents/query.response.schema.json');
 const EXECUTE_RESPONSE_SCHEMA = require('../intents/execute.response.schema.json');
 const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schema.json');
-const ON_OFF_ATTRI_SCHEMA = require('../traits/onoff.attributes.schema.json');
-const ON_OFF_PARAMS_SCHEMA = require('../traits/onoff.params.schema.json');
-const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
