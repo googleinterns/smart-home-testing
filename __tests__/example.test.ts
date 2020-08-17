@@ -25,15 +25,31 @@ test('Sync Response fails', async () => {
   expect(syncErrors).toBeFalsy();
 });
 
+const devices = [{
+          "id": "123",
+          "customData": {
+            "fooValue": 74,
+            "barValue": true,
+            "bazValue": "foo"
+          }
+        }, {
+          "id": "456",
+          "customData": {
+            "fooValue": 12,
+            "barValue": false,
+            "bazValue": "bar"
+          }
+        }];
+
 const execution = 
-    {"command": "action.devices.commands.OnOff",
+    [{"command": "action.devices.commands.OnOff",
       "params": {
         "on": true
        }
-    };
+    }];
 
-test('execute Response using actions an intent handler', async () =>{
-  const reqExec = testreq.generateExecuteRequest(["123","456"],[execution]);
+test('Execute Response using actions an intent handler', async () =>{
+  const reqExec = testreq.generateExecuteRequest(devices, execution);
   const res = fakeapp.onExecute(reqExec)
   const testlibValid = testlib.validate(res, 'execute');
   expect(testlibValid).toBe(undefined);
