@@ -31,13 +31,13 @@ function responseValidation(apiResponse: any, schema: any) {
  */
 export function validate(apiResponse: any, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
   if (responseType === 'sync') {
-    return responseValidation(apiResponse, syncResponseSchema);
+    return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
-    return responseValidation(apiResponse, queryResponseSchema);
+    return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {
-    return responseValidation(apiResponse, executeResponseSchema);
+    return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
-    return responseValidation(apiResponse, disconnectResponseSchema);
+    return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   }
   throw new Error('Response type not specified');
 }
