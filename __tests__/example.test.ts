@@ -24,3 +24,10 @@ test('Sync Response fails', async () => {
   const syncErrors = testlib.validate(exampleSyncResFail, 'sync');
   expect(syncErrors).toBeFalsy();
 });
+
+test('execute Response using actions an intent handler', async () =>{
+  const reqExec = testreq.generateExecuteRequest();
+  const res = fakeapp.onExecute(reqExec)
+  const testlibValid = testlib.validate(res, 'sync');
+  expect(testlibValid).toBe(undefined);
+});
