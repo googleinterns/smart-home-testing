@@ -15,7 +15,7 @@ const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schem
  * @param apiResponse User defined api response
  * @return Returns undefined if valid is true, returns an array of error(s) if valid is false.
  */
-function responseValidation(apiResponse: object, schema: any) {
+function responseValidation(apiResponse: object, schema: object) {
   const isValid = ajv.validate(schema, apiResponse);
   if (isValid) {
     return undefined;
