@@ -34,18 +34,24 @@ function responseValidation(apiResponse: object, schema: any) {
  */
 export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
   if (responseType === 'sync') {
+    //Sync response validations    
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
+    //Query response validations  
+    const DEVICES = apiResponse['payload']['devices'][];
+    //validate against the onoff params schema here
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {
-    const COMMANDS = apiResponse["payload"]["commands"];
-    const COMMANDS_LENGTH = COMMANDS.length;     
-    for(let i = 0; i <= COMMANDS_LENGTH; i++){
-        const STATES = COMMANDS[i]["states"];
-        return responseValidation(STATES, ON_OFF_STATES_SCHEMA);
+    //Execute response validations   
+    const COMMANDS = apiResponse['payload']['commands'];
+    const COMMANDS_LENGTH = COMMANDS.length;
+    for (let i = 0; i <= COMMANDS_LENGTH; i++) {
+      const STATES = COMMANDS[i]['states'];
+      return responseValidation(STATES, ON_OFF_STATES_SCHEMA);
     }
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
+    //Disconnect response validations    
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   }
   throw new Error('Response type not specified');
