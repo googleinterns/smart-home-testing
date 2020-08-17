@@ -9,6 +9,9 @@ const SYNC_RESPONSE_SCHEMA = require('../intents/sync.response.schema.json');
 const QUERY_RESPONSE_SCHEMA = require('../intents/query.response.schema.json');
 const EXECUTE_RESPONSE_SCHEMA = require('../intents/execute.response.schema.json');
 const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schema.json');
+const ON_OFF_ATTRI_SCHEMA = require('../traits/onoff.attributes.schema.json');
+const ON_OFF_PARAMS_SCHEMA = require('../traits/onoff.params.schema.json');
+const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
@@ -35,6 +38,13 @@ export function validate(apiResponse: object, responseType: 'sync' | 'query'|'ex
   } else if (responseType == 'query') {
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {
+    const COMMANDS = EXECUTE_RESPONSE_SCHEMA["payload"]["commands"];
+    const COMMANDS_LENGTH = COMMANDS.length;     
+    for(let i = 0; i <= COMMANDS_LENGTH; i++){
+        const IS_ON = COMMANDS[i]["states"]["on"];
+        const IS_ONLINE = COMMANDS[i]["states"]["online"];
+        return [responseValidation(IS_ON, ON_OFF_STATES_SCHEMA), responseValidation(IS_ONLINE, ON_OFF_STATES_SCHEMA)];
+    }
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
