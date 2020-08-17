@@ -85,7 +85,7 @@ export function onSync(body){
 }
 
 export function onQuery(body){
-  {
+  return {
   "requestId": "ff36a3cc-ec34-11e6-b1a0-64510650abcf",
   "payload": {
     "devices": {
@@ -110,7 +110,7 @@ export function onQuery(body){
 }
 
 export function onExecute(body){
-    {
+    return {
       "requestId": "ff36a3cc-ec34-11e6-b1a0-64510650abcf",
       "payload": {
         "commands": [
