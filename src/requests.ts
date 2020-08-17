@@ -2,7 +2,7 @@
  * Generates random request ID
  * @param min Minimum number
  * @param max Maximum number
- * @returns Random number between the range of the min to max number specified
+ * @return Random number between the range of the min to max number specified
  */
 function generateRequestID(min: number, max: number) {
   return Math.floor(Math.random() * (max - min) + min).toString();
@@ -10,7 +10,7 @@ function generateRequestID(min: number, max: number) {
 
 /**
  * Generates SYNC request
- * @returns Specified format for SYNC intent request.
+ * @return Specified format for SYNC intent request.
  */
 export function generateSyncRequest() {
   const requestId = generateRequestID(100, 999);
@@ -44,7 +44,7 @@ interface QueryRequest {
 /**
  * Generates QUERY request
  * @param devices Array of type Device containing device IDs and respective custom data
- * @returns Specified format for QUERY intent request.
+ * @return Specified format for QUERY intent request.
  */
 export function generateQueryRequest(devices: Device[]): QueryRequest {
   const requestId = generateRequestID(100, 999);
@@ -52,7 +52,7 @@ export function generateQueryRequest(devices: Device[]): QueryRequest {
     requestId,
     inputs: [
       {
-        intent: "action.devices.QUERY",
+        intent: 'action.devices.QUERY',
         payload: {
           devices,
         },
@@ -62,7 +62,7 @@ export function generateQueryRequest(devices: Device[]): QueryRequest {
 }
 
 interface Command {
-  name: string;
+  command: string;
   params?: { [key: string]: any };
 }
 
@@ -83,18 +83,18 @@ interface ExecuteRequest {
  * Generates EXECUTE request
  * @param devices Array of type Device containing device IDs and respective custom data
  * @param execution Array of type Command specifying the commands of the devices and their respective parameters
- * @returns Specified format for EXECUTE intent request.
+ * @return Specified format for EXECUTE intent request.
  */
 export function generateExecuteRequest(
-  devices: Device[],
-  execution: Command[]
+    devices: Device[],
+    execution: Command[],
 ): ExecuteRequest {
   const requestId = generateRequestID(100, 999);
   return {
     requestId,
     inputs: [
       {
-        intent: "action.devices.EXECUTE",
+        intent: 'action.devices.EXECUTE',
         payload: {
           devices,
           execution,
@@ -106,7 +106,7 @@ export function generateExecuteRequest(
 
 /**
  * Generates DISCONNECT request
- * @returns Specified format for DISCONNECT intent request.
+ * @return Specified format for DISCONNECT intent request.
  */
 export function generateDisconnectRequest() {
   const requestId = generateRequestID(100, 999);
