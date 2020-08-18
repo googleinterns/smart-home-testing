@@ -17,10 +17,15 @@ const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schem
  */
 function responseValidation(apiResponse: object, schema: object) {
   const isValid = ajv.validate(schema, apiResponse);
-  if (isValid) {
-    return undefined;
+  try {
+    if (isValid) {
+      return undefined;
+    } else {
+      throw new Error();
+    }
+  } catch (e) {
+    return ajv.errors;
   }
-  return ajv.errors;
 }
 
 /**
@@ -29,7 +34,7 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
+export function validate(apiResponse: object, responseType: string) {
   if (responseType === 'sync') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
@@ -38,6 +43,5 @@ export function validate(apiResponse: object, responseType: 'sync' | 'query'|'ex
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
-  }
-  throw new Error('Response type not specified');
+  } throw new Error('Response type not valid');
 }
