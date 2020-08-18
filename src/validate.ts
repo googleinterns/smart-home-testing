@@ -18,31 +18,34 @@ const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
  * @param apiResponse User defined api response
  * @return Returns undefined if valid is true, returns an array of error(s) if valid is false.
  */
-function responseValidation(apiResponse: object, schema: any) {
+function responseValidation(apiResponse: object, schema: object) {
   const isValid = ajv.validate(schema, apiResponse);
-  if (isValid) {
-    return undefined;
+  try {
+    if (isValid) {
+      return undefined;
+    } else {
+      throw new Error();
+    }
+  } catch (e) {
+    return ajv.errors;
   }
-  return ajv.errors;
 }
-
 /**
  * Identifies the response type and validates the function based on the schemas.
  * @param apiResponse User defined api response
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
+export function validate(apiResponse: object, responseType: string) {
   if (responseType === 'sync') {
-    //Sync response validations    
+    // Sync response validations
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
-    //Query response validations  
-    const DEVICES = apiResponse['payload']['devices'][];
-    //validate against the onoff params schema here
+    // Query response validations
+    // validate against the onoff params schema here
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {
-    //Execute response validations   
+    // Execute response validations
     const COMMANDS = apiResponse['payload']['commands'];
     const COMMANDS_LENGTH = COMMANDS.length;
     for (let i = 0; i <= COMMANDS_LENGTH; i++) {
@@ -51,7 +54,7 @@ export function validate(apiResponse: object, responseType: 'sync' | 'query'|'ex
     }
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
   } else if (responseType == 'disconnect') {
-    //Disconnect response validations    
+    // Disconnect response validations
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   }
   throw new Error('Response type not specified');
