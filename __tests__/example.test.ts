@@ -15,7 +15,7 @@ describe.only('Sync response testing suite', () => {
   test('Sync Response fails', async () => {
     const exampleSyncResFail = require('./example.sync.response.fail.json');
     expect(() => {
-      testlib.validate(exampleSyncResFail, 'sync');
+      testlib.validate(exampleSyncResFail, 'fail');
     }).toThrow();
   });
 
