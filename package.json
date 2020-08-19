@@ -1,0 +1,43 @@
+{
+  "name": "smart-home-testing",
+  "version": "1.0.0",
+  "description": "\"Testing library for smart home\"",
+  "main": "src/validate.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/googleinterns/smart-home-testing.git"
+  },
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/googleinterns/smart-home-testing/issues"
+  },
+  "homepage": "https://github.com/googleinterns/smart-home-testing#readme",
+  "devDependencies": {
+    "@types/node": "^13.11.1",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
+    "eslint": "^7.6.0",
+    "eslint-config-google": "^0.14.0",
+    "gts": "^2.0.2",
+    "jest": "^26.4.0",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "ajv": "^6.12.3"
+  }
+}
