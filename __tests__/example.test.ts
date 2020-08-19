@@ -14,9 +14,7 @@ describe.only('Sync response testing suite', () => {
   // Test fails and shows errors, using defined schema
   test('Sync Response fails', async () => {
     const exampleSyncResFail = require('./example.sync.response.fail.json');
-    expect(() => {
-      testlib.validate(exampleSyncResFail, 'fail');
-    }).toThrow();
+    expect(testlib.validate(exampleSyncResFail, 'sync')).not.toBe(undefined);
   });
 
   // Test passes
