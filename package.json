@@ -38,6 +38,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "ajv": "^6.12.3"
+    "ajv": "^6.12.3",
+    "chai": "^4.2.0"
   }
 }
