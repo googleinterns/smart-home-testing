@@ -26,18 +26,19 @@ function responseValidation(apiResponse: object, schema: object) {
 
 /**
  * Identifies the response type and validates the function based on the schemas.
- * @param req Request from one of the generate request functions.
- * @param apiResponse User defined api response.
+ * @param apiResponse User defined api response
+ * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: string) {
-  if (responseType === 'sync') {
+export function validate(req: object, apiResponse: object) {
+  const responseType = req['inputs'][0]['intent'];
+  if (responseType === 'action.devices.SYNC') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
-  } else if (responseType == 'query') {
+  } else if (responseType == 'action.devices.QUERY') {
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
-  } else if (responseType == 'execute') {
+  } else if (responseType == 'action.devices.EXECUTE') {
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
-  } else if (responseType == 'disconnect') {
+  } else if (responseType == 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   } throw new Error('Response type not valid');
 }
