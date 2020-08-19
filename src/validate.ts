@@ -39,9 +39,21 @@ function responseValidation(apiResponse: object, schema: object) {
 export function validate(apiResponse: object, responseType: string) {
   if (responseType === 'sync') {
     // Sync response validations
+    const DEVICES = apiResponse['payload']['devices'];
+    const DEVICES_LENGTH = apiResponse['payload']['devices'].length;
+    for (let i = 0; i <= DEVICES_LENGTH; i++){
+        const DEVICE_TRAITS = DEVICES[i]['traits'];
+        const TRAITS_LENGTH = DEVICE_TRAITS.length;
+        const DEVICE_ATTRIBUTES = DEVICES[i]['attributes'];
+        for (let j = 0; j <= TRAITS_LENGTH; j++){
+            //validate this against the attributes
+            const DEVICE_TRAITS[j]
+        }
+    } 
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
     // Query response validations
+        // loop using the device data given from generate requests 
     // validate against the onoff params schema here
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType == 'execute') {

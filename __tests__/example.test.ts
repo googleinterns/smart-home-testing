@@ -52,6 +52,16 @@ const devices = [{
   },
 }];
 
+describe('Query response testing suite', () => {
+  // Test passes, Execute response
+  test('Query Response using actions an intent handler', async () =>{
+    const reqExec = testreq.generateExecuteRequest(devices, execution);
+    const res = fakeapp.onExecute(reqExec);
+    const testlibValid = testlib.validate(res, 'query');
+    expect(testlibValid).toBe(undefined);
+  });
+});
+
 const execution =
     [{'command': 'action.devices.commands.OnOff',
       'params': {
