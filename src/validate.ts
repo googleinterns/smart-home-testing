@@ -26,8 +26,8 @@ function responseValidation(apiResponse: object, schema: object) {
 
 /**
  * Identifies the response type and validates the function based on the schemas.
- * @param apiResponse User defined api response
- * @param responseType User defined intent response
+ * @param req Request from one of the generate request functions.
+ * @param apiResponse User defined api response.
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
 export function validate(apiResponse: object, responseType: string) {
