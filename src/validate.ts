@@ -34,11 +34,11 @@ export function validate(req: object, apiResponse: object) {
   const responseType = req['inputs'][0]['intent'];
   if (responseType === 'action.devices.SYNC') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
-  } else if (responseType == 'action.devices.QUERY') {
+  } else if (responseType === 'action.devices.QUERY') {
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
-  } else if (responseType == 'action.devices.EXECUTE') {
+  } else if (responseType === 'action.devices.EXECUTE') {
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
-  } else if (responseType == 'action.devices.DISCONNECT') {
+  } else if (responseType === 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   } throw new Error('Response type not valid');
 }
