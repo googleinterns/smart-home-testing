@@ -1,113 +1,43 @@
 'use-strict';
+import * as Ajv from 'ajv';
+
+const ajv = new Ajv({
+  allErrors: true,
+});
+
+const SYNC_RESPONSE_SCHEMA = require('../intents/sync.response.schema.json');
+const QUERY_RESPONSE_SCHEMA = require('../intents/query.response.schema.json');
+const EXECUTE_RESPONSE_SCHEMA = require('../intents/execute.response.schema.json');
+const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schema.json');
 
 /**
- * Generates random request ID 
- * @param min Minimum number
- * @param max Maximum number 
- * @returns Random number between the range of the min to max number specified
+ * Helper function that uses AJV library to validate the response against the schema
+ * @param apiResponse User defined api response
+ * @return Returns undefined if valid is true, returns an array of error(s) if valid is false.
  */
-function generateRequestID(min: number, max: number){
-     return Math.floor(Math.random() * (max-min) + min).toString()
-}
-
-/**
- * Generates SYNC request 
- * @returns Specified format for SYNC intent request. 
- */
-export function generateSyncRequest(){
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.SYNC"
-        }]
-    }
-}
-
-interface Device {
-  id: string;
-  customData?: {[key: string]: any};
-}
-
-interface QueryInput {
-  intent: string; 
-  payload: {
-    devices: Device[]; 
-  };
-}
-
-interface QueryRequest {
-  requestId: string;
-  inputs: QueryInput[];
+function responseValidation(apiResponse: object, schema: object) {
+  const isValid = ajv.validate(schema, apiResponse);
+  if (isValid) {
+    return undefined;
+  } else {
+    return ajv.errors;
+  }
 }
 
 /**
- * Generates QUERY request 
- * @param devices Array of type Device containing device IDs and respective custom data
- * @returns Specified format for QUERY intent request. 
+ * Identifies the response type and validates the function based on the schemas.
+ * @param apiResponse User defined api response
+ * @param responseType User defined intent response
+ * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function generateQueryRequest(devices: Device[]) : QueryRequest{
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.QUERY",
-          payload: {
-            devices
-            }
-        }]
-    }
-}
-
-
-interface Command{
-    name: string,
-    params?: {[key: string]: any}
-}
-
-interface ExecuteInput{
-    intent: string;
-    payload: {
-        devices: Device[];
-        execution: Command[];
-    };
-}
-
-interface ExecuteRequest{
-    requestId: string;
-    inputs: ExecuteInput[];
-}
-
-/**
- * Generates EXECUTE request 
- * @param devices Array of type Device containing device IDs and respective custom data 
- * @param execution Array of type Command specifying the commands of the devices and their respective parameters 
- * @returns Specified format for EXECUTE intent request. 
- */
-export function generateExecuteRequest(devices: Device[], execution: Command[]): ExecuteRequest{
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.EXECUTE",
-          payload: {
-            devices,
-            execution
-          }
-        }]
-    }
-}
-
-/**
- * Generates DISCONNECT request 
- * @returns Specified format for DISCONNECT intent request. 
- */
-export function generateDisconnectRequest(){
-    const requestId = generateRequestID(100,999);
-    return {
-        requestId,
-        inputs: [{
-          intent: "action.devices.DISCONNECT"
-        }]
-    }
+export function validate(apiResponse: object, responseType: string) {
+  if (responseType === 'sync') {
+    return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
+  } else if (responseType == 'query') {
+    return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
+  } else if (responseType == 'execute') {
+    return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
+  } else if (responseType == 'disconnect') {
+    return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
+  } throw new Error('Response type not valid');
 }
