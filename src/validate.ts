@@ -17,13 +17,9 @@ const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schem
  */
 function responseValidation(apiResponse: object, schema: object) {
   const isValid = ajv.validate(schema, apiResponse);
-  try {
-    if (isValid) {
-      return undefined;
-    } else {
-      throw new Error();
-    }
-  } catch (e) {
+  if (isValid) {
+    return undefined;
+  } else {
     return ajv.errors;
   }
 }
@@ -34,7 +30,7 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: string) {
+export function validate(apiResponse: object, responseType: 'sync' | 'query'|'execute'| 'disconnect') {
   if (responseType === 'sync') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType == 'query') {
