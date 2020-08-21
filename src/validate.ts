@@ -30,8 +30,8 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(req: object, apiResponse: object) {
-  const responseType = req['inputs'][0]['intent'];
+export function validate(intentRequest: object, apiResponse: object) {
+  const responseType = intentRequest['inputs'][0]['intent'];
   if (responseType === 'action.devices.SYNC') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
   } else if (responseType === 'action.devices.QUERY') {
