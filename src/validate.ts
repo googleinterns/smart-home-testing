@@ -30,14 +30,15 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param responseType User defined intent response
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(apiResponse: object, responseType: string) {
-  if (responseType === 'sync') {
+export function validate(intentRequest: object, apiResponse: object) {
+  const responseType = intentRequest['inputs'][0]['intent'];
+  if (responseType === 'action.devices.SYNC') {
     return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
-  } else if (responseType == 'query') {
+  } else if (responseType === 'action.devices.QUERY') {
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
-  } else if (responseType == 'execute') {
+  } else if (responseType === 'action.devices.EXECUTE') {
     return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
-  } else if (responseType == 'disconnect') {
+  } else if (responseType === 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   } throw new Error('Response type not valid');
 }
