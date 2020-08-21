@@ -50,8 +50,8 @@ export function validate(intentRequest: object, apiResponse: object) {
       const traits = syncDevices[i]['traits'];
       const traitsLength = syncDevices[i]['traits'].length;
       const attributes = syncDevices[i]['attributes'];
-      if (attributes === undefined){
-          return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
+      if (attributes === undefined) {
+        return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
       }
       for (let j = 0; j < traitsLength; j++) {
         const trait = traits[j];
@@ -59,11 +59,11 @@ export function validate(intentRequest: object, apiResponse: object) {
           const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
           if (validateTraitRes) {
             return syncErrors.push(...validateTraitRes);
-          } 
+          }
         }
       }
     }
-    return syncErrors.length ? syncErrors : undefined; 
+    return syncErrors.length ? syncErrors : undefined;
   } else if (responseType === 'action.devices.QUERY') {
     // validate with states schema
     const queryErrors : object[] = [];
@@ -76,9 +76,9 @@ export function validate(intentRequest: object, apiResponse: object) {
       const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT['action.devices.commands.OnOff']);
       if (validateQueryTraitStates) {
         return queryErrors.push(...validateQueryTraitStates);
-      } 
+      }
     }
-    return queryErrors.length ? queryErrors : undefined; 
+    return queryErrors.length ? queryErrors : undefined;
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
     const executeErrors : object[] = [];

@@ -5,8 +5,8 @@ import * as fakeapp from './fake-app';
 
 describe.only('Sync response testing suite', () => {
   // Test passes
+  const reqSync = testreq.generateSyncRequest();
   test('Sync Response using actions an intent handler', async () =>{
-    const reqSync = testreq.generateSyncRequest();
     const res = fakeapp.onSync(reqSync);
     const testlibValid = testlib.validate(reqSync, res);
     expect(testlibValid).toBe(undefined);
@@ -18,7 +18,7 @@ describe.only('Sync response testing suite', () => {
     expect(testlibValid).not.toBe(undefined);
   });
 
-  // Test passes defined user sync response 
+  // Test passes defined user sync response
   test('Sync Response using a given sync response passes', async () =>{
     const res = require('./example.sync.response.json');
     const testlibValid = testlib.validate(reqSync, res);
@@ -32,6 +32,13 @@ const devices = [{
     'fooValue': 74,
     'barValue': true,
     'bazValue': 'foo',
+  },
+}, {
+  'id': '456',
+  'customData': {
+    'fooValue': 12,
+    'barValue': false,
+    'bazValue': 'bar',
   },
 }];
 
@@ -70,5 +77,4 @@ describe.only('Disconnect response testing suite', () => {
     const testlibValid = testlib.validate(reqDisconnect, res);
     expect(testlibValid).toBe(undefined);
   });
-  
 });
