@@ -43,12 +43,18 @@ const devices = [{
 }];
 
 describe.only('Query response testing suite', () => {
+  const reqQuery = testreq.generateQueryRequest(devices);
   // Test passes
-  test('Query Response using actions an intent handler', async () =>{
-    const reqQuery = testreq.generateQueryRequest(devices);
+  test('Query Response passes using actions an intent handler', async () =>{
     const res = fakeapp.onQuery(reqQuery);
     const testlibValid = testlib.validate(reqQuery, res);
     expect(testlibValid).toBe(undefined);
+  });
+  
+  test('Query Response fails using actions a given query response', async () =>{
+    const res = require('./example.query.response.fail.json');
+    const testlibValid = testlib.validate(reqQuery, res);
+    expect(testlibValid).not.toBe(undefined);
   });
 });
 
@@ -60,12 +66,18 @@ const execution = [{
 }];
 
 describe.only('Execute response testing suite', () => {
+  const reqExecute = testreq.generateExecuteRequest(devices, execution);
   // Test should pass but there is an error here right now.
   test('Execute Response using actions an intent handler', async () =>{
-    const reqExecute = testreq.generateExecuteRequest(devices, execution);
     const res = fakeapp.onExecute(reqExecute);
     const testlibValid = testlib.validate(reqExecute, res);
     expect(testlibValid).toBe(undefined);
+  });
+  
+  test('Execute Response fails using actions a given query response', async () =>{
+    const res = require('./example.execute.response.fail.json');
+    const testlibValid = testlib.validate(reqExecute, res);
+    expect(testlibValid).not.toBe(undefined);
   });
 });
 
