@@ -66,18 +66,7 @@ export function validate(intentRequest: object, apiResponse: object) {
     return syncErrors.length ? syncErrors : undefined;
   } else if (responseType === 'action.devices.QUERY') {
     // validate with states schema
-    const queryErrors : object[] = [];
-    const devices = intentRequest['inputs'][0]['payload']['devices'];
-    const devicesLength = devices.length;
-    for (let i = 0; i < devicesLength; i++) {
-      const deviceIds = devices[i]['id'];
-      const states = apiResponse['payload']['devices'][deviceIds];
-      const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT['action.devices.commands.OnOff']);
-      if (validateQueryTraitStates) {
-        return queryErrors.push(...validateQueryTraitStates);
-      }
-    }
-    return queryErrors.length ? queryErrors : undefined;
+    return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
     const executeErrors : object[] = [];
