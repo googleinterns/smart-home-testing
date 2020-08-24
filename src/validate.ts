@@ -72,7 +72,6 @@ export function validate(intentRequest: object, apiResponse: object) {
     for (let i = 0; i < devicesLength; i++) {
       const deviceIds = devices[i]['id'];
       const states = apiResponse['payload']['devices'][deviceIds];
-      // still working on this function figuring out a way to not hardcode the action in here
       const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT['action.devices.commands.OnOff']);
       if (validateQueryTraitStates) {
         return queryErrors.push(...validateQueryTraitStates);
@@ -82,7 +81,7 @@ export function validate(intentRequest: object, apiResponse: object) {
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
     const executeErrors : object[] = [];
-    // gets the specific command
+    //gets the execution array from the intent request 
     const execution = intentRequest['inputs'][0]['payload']['execution'];
     const executionLength = intentRequest['inputs'][0]['payload']['execution'].length;
 
@@ -91,6 +90,7 @@ export function validate(intentRequest: object, apiResponse: object) {
     const commandsLength = commands.length;
 
     for (let i = 0; i < executionLength; i++) {
+      // gets the specific command
       const commandName = execution[i]['command'];
       if (commandName in COMMAND_STATES_EXPECT) {
         for (let j = 0; j < commandsLength; j++) {
