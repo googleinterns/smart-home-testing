@@ -42,28 +42,33 @@ const devices = [{
   },
 }];
 
-describe.only('Query response testing suite', () => {
-  const reqQuery = testreq.generateQueryRequest(devices);
-  // Test passes
-  test('Query Response passes using actions an intent handler', async () =>{
-    const res = fakeapp.onQuery(reqQuery);
-    const testlibValid = testlib.validate(reqQuery, res);
-    expect(testlibValid).toBe(undefined);
-  });
-
-  test('Query Response fails using actions a given query response', async () =>{
-    const res = require('./example.query.response.fail.json');
-    const testlibValid = testlib.validate(reqQuery, res);
-    expect(testlibValid).not.toBe(undefined);
-  });
-});
-
 const execution = [{
   'command': 'action.devices.commands.OnOff',
   'params': {
     'on': true,
   },
 }];
+
+describe.only('Query response testing suite', () => {
+  const reqQuery = testreq.generateQueryRequest(devices);
+  const executeLength = execution.length;
+  // Test passes
+  test('Query Response passes using actions an intent handler', async () =>{
+    const res = fakeapp.onQuery(reqQuery);
+    for (let i = 0; i <= executeLength; i++){
+      const testlibValid = testlib.validate(reqQuery, res, execution[0]['command']);
+      expect(testlibValid).toBe(undefined);
+    }
+  });
+
+  test('Query Response fails using actions a given query response', async () =>{
+    const res = require('./example.query.response.fail.json');
+    for (let i = 0; i <= executeLength; i++){
+      const testlibValid = testlib.validate(reqQuery, res, execution[0]['command']);
+      expect(testlibValid).not.toBe(undefined);
+    }
+  });
+});
 
 describe.only('Execute response testing suite', () => {
   const reqExecute = testreq.generateExecuteRequest(devices, execution);
