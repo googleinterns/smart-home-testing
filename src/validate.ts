@@ -81,7 +81,7 @@ export function validate(intentRequest: object, apiResponse: object) {
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
     const executeErrors : object[] = [];
-    //gets the execution array from the intent request 
+    // gets the execution array from the intent request
     const execution = intentRequest['inputs'][0]['payload']['execution'];
     const executionLength = intentRequest['inputs'][0]['payload']['execution'].length;
 

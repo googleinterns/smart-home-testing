@@ -50,7 +50,7 @@ describe.only('Query response testing suite', () => {
     const testlibValid = testlib.validate(reqQuery, res);
     expect(testlibValid).toBe(undefined);
   });
-  
+
   test('Query Response fails using actions a given query response', async () =>{
     const res = require('./example.query.response.fail.json');
     const testlibValid = testlib.validate(reqQuery, res);
@@ -73,7 +73,7 @@ describe.only('Execute response testing suite', () => {
     const testlibValid = testlib.validate(reqExecute, res);
     expect(testlibValid).toBe(undefined);
   });
-  
+
   test('Execute Response fails using actions a given query response', async () =>{
     const res = require('./example.execute.response.fail.json');
     const testlibValid = testlib.validate(reqExecute, res);
