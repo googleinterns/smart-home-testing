@@ -55,7 +55,7 @@ describe.only('Query response testing suite', () => {
   // Test passes
   test('Query Response passes using actions an intent handler', async () =>{
     const res = fakeapp.onQuery(reqQuery);
-    for (let i = 0; i <= executeLength; i++){
+    for (let i = 0; i <= executeLength; i++) {
       const testlibValid = testlib.validate(reqQuery, res, execution[0]['command']);
       expect(testlibValid).toBe(undefined);
     }
@@ -63,7 +63,7 @@ describe.only('Query response testing suite', () => {
 
   test('Query Response fails using actions a given query response', async () =>{
     const res = require('./example.query.response.fail.json');
-    for (let i = 0; i <= executeLength; i++){
+    for (let i = 0; i <= executeLength; i++) {
       const testlibValid = testlib.validate(reqQuery, res, execution[0]['command']);
       expect(testlibValid).not.toBe(undefined);
     }

@@ -22,7 +22,7 @@ const TRAIT_ATTRIBUTES_EXPECT = {
 
 const TRAITS_COMMANDS_PAIR = {
   'action.devices.traits.OnOff': 'action.devices.commands.OnOff',
-}
+};
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
@@ -77,11 +77,11 @@ export function validate(intentRequest: object, apiResponse: object, executeComm
     for (let i = 0; i < devicesLength; i++) {
       const deviceIds = devices[i]['id'];
       const states = apiResponse['payload']['devices'][deviceIds];
-      if (executeCommand != undefined){
-          const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[executeCommand]);
-          if (validateQueryTraitStates) {
-            return queryErrors.push(...validateQueryTraitStates);
-          }
+      if (executeCommand != undefined) {
+        const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[executeCommand]);
+        if (validateQueryTraitStates) {
+          return queryErrors.push(...validateQueryTraitStates);
+        }
       }
     }
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
