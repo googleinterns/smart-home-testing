@@ -64,7 +64,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
             if (trait in TRAIT_ATTRIBUTES_EXPECT) {
               const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
               if (validateTraitRes) {
-                return syncErrors.push(...validateTraitRes);
+                syncErrors.push(...validateTraitRes);
               }
             }
           }
@@ -106,22 +106,27 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     // identifies the part of the api response to validate against a schema
     const commands = apiResponse['payload']['commands'];
     const commandsLength = commands.length;
-
-    for (let i = 0; i < executionLength; i++) {
-      // gets the specific command
-      const commandName = execution[i]['command'];
-      if (commandName in COMMAND_STATES_EXPECT) {
-        for (let j = 0; j < commandsLength; j++) {
-          const states = commands[j]['states'];
-          const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[commandName]);
-          if (validateExecTraitStates) {
-            return executeErrors.push(...validateExecTraitStates);
-          } else {
-            return responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
+    
+   const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
+   
+   if (validateExecuteAPI === undefined){
+        for (let i = 0; i < executionLength; i++) {
+          // gets the specific command
+          const commandName = execution[i]['command'];
+          if (commandName in COMMAND_STATES_EXPECT) {
+            for (let j = 0; j < commandsLength; j++) {
+              const states = commands[j]['states'];
+              const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[commandName]);
+              if (validateExecTraitStates) {
+                executeErrors.push(...validateExecTraitStates);
+              } else {
+                return validateExecuteAPI;
+              }
+            }
           }
         }
-      }
-    }
+   }
+   return executeErrors.length ? executeErrors : undefined;
   } else if (responseType === 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   } throw new Error('Response type not valid');
