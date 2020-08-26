@@ -60,9 +60,8 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const syncDevicesLength = syncDevices.length;
     for (let i = 0; i < syncDevicesLength; i++) {
       const traits = syncDevices[i]['traits'];
-      const traitsLength = syncDevices[i]['traits'].length;
       const attributes = syncDevices[i]['attributes'] || {};
-      for (let j = 0; j < traitsLength; j++) {
+      for (let j = 0; j < traits.length; j++) {
         const trait = traits[j];
         if (trait in TRAIT_ATTRIBUTES_EXPECT) {
           const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
