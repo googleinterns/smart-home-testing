@@ -3,9 +3,10 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-const requestSync = testreq.generateSyncRequest();
-const responseSync = fakeapp.onSync(requestSync);
+
 describe.only('Sync response testing suite', () => {
+  const requestSync = testreq.generateSyncRequest();
+  const responseSync = fakeapp.onSync(requestSync);    
   // Test passes
   test('Sync Response using actions an intent handler', async () =>{
     const testlibValid = testlib.validate(requestSync, responseSync);
@@ -42,9 +43,10 @@ const devices = [{
   },
 }];
 
-const requestQuery = testreq.generateQueryRequest(devices);
-
 describe.only('Query response testing suite', () => {
+  const requestSync = testreq.generateSyncRequest();
+  const responseSync = fakeapp.onSync(requestSync); 
+  const requestQuery = testreq.generateQueryRequest(devices);    
   // Test passes
   test('Query Response passes using actions an intent handler', async () =>{
     const responseQuery = fakeapp.onQuery(requestQuery);
@@ -65,9 +67,9 @@ const execution = [{
     'on': true,
   },
 }];
-const requestExecute = testreq.generateExecuteRequest(devices, execution);
 
 describe.only('Execute response testing suite', () => {
+  const requestExecute = testreq.generateExecuteRequest(devices, execution);
   // Test should pass but there is an error here right now.
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = fakeapp.onExecute(requestExecute);
