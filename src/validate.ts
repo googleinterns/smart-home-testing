@@ -42,6 +42,7 @@ function responseValidation(apiResponse: object, schema: object) {
  * Identifies the response type and validates the function based on the schemas.
  * @param req Request from one of the generate request functions.
  * @param apiResponse User defined api response.
+ * @param syncData? Optional parameter to help identify what schemas to use for trait validation 
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
 export function validate(intentRequest: object, apiResponse: object, syncData?: object){
@@ -107,7 +108,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const executeErrors : object[] = [];
     // gets the execution array from the intent request
     const execution = intentRequest['inputs'][0]['payload']['execution'];
-    const executionLength = intentRequest['inputs'][0]['payload']['execution'].length;
+    const executionLength = execution.length;
 
     const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
    
