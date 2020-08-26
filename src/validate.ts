@@ -80,7 +80,11 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const devicesLength = devices.length;
     
     const validateQueryAPI = responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
-    
+    if (validateQueryAPI) {
+        queryErrors.push(...validateQueryAPI);
+        return queryErrors;
+    }   
+   
     for (let i = 0; i < devicesLength; i++) {
       const deviceIds = devices[i]['id'];
       const states = apiResponse['payload']['devices'][deviceIds];
@@ -92,7 +96,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
              if (trait in TRAITS_COMMANDS_PAIR){
                const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[TRAITS_COMMANDS_PAIR[trait]]);
                  if (validateQueryTraitStates) {
-                   return queryErrors.push(...validateQueryTraitStates);
+                   queryErrors.push(...validateQueryTraitStates);
                  }
              }
           }
