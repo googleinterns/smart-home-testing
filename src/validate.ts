@@ -19,6 +19,11 @@ const COMMAND_STATES_EXPECT = {
 const TRAIT_ATTRIBUTES_EXPECT = {
   'action.devices.traits.OnOff': ON_OFF_ATTRIBUTES_SCHEMA,
 };
+
+const TRAITS_COMMANDS_PAIR = {
+  'action.devices.traits.OnOff': 'action.devices.commands.OnOff',
+}
+
 /**
  * Helper function that uses AJV library to validate the response against the schema
  * @param apiResponse User defined api response
@@ -39,33 +44,57 @@ function responseValidation(apiResponse: object, schema: object) {
  * @param apiResponse User defined api response.
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(intentRequest: object, apiResponse: object) {
+export function validate(intentRequest: object, apiResponse: object, syncData?: object){
   const responseType = intentRequest['inputs'][0]['intent'];
   if (responseType === 'action.devices.SYNC') {
-    // validate traits with attributes schema
+    const validateSyncAPI = responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA); 
     const syncErrors : object[] = [];
-    const syncDevices = apiResponse['payload']['devices'];
-    const syncDevicesLength = syncDevices.length;
-    for (let i = 0; i < syncDevicesLength; i++) {
-      const traits = syncDevices[i]['traits'];
-      const traitsLength = syncDevices[i]['traits'].length;
-      const attributes = syncDevices[i]['attributes'];
-      if (attributes === undefined) {
-        return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
-      }
-      for (let j = 0; j < traitsLength; j++) {
-        const trait = traits[j];
-        if (trait in TRAIT_ATTRIBUTES_EXPECT) {
-          const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
-          if (validateTraitRes) {
-            return syncErrors.push(...validateTraitRes);
+    if (validateSyncAPI === undefined){
+        const syncDevices = apiResponse['payload']['devices'];
+        const syncDevicesLength = syncDevices.length;
+        for (let i = 0; i < syncDevicesLength; i++) {
+          const traits = syncDevices[i]['traits'];
+          const traitsLength = syncDevices[i]['traits'].length;
+          const attributes = syncDevices[i]['attributes'];
+          if (attributes === undefined) {
+            return validateSyncAPI;
           }
-        }
-      }
+          for (let j = 0; j < traitsLength; j++) {
+            const trait = traits[j];
+            if (trait in TRAIT_ATTRIBUTES_EXPECT) {
+              const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
+              if (validateTraitRes) {
+                return syncErrors.push(...validateTraitRes);
+              }
+            }
+          }
+       } 
+    } else {
+        syncErrors.push(...validateSyncAPI!);
     }
     return syncErrors.length ? syncErrors : undefined;
   } else if (responseType === 'action.devices.QUERY') {
-    // validate with states schema
+    // validate with states schema;
+    const queryErrors : object[] = [];
+    const devices = intentRequest['inputs'][0]['payload']['devices'];
+    const devicesLength = devices.length;
+    for (let i = 0; i < devicesLength; i++) {
+      const deviceIds = devices[i]['id'];
+      const states = apiResponse['payload']['devices'][deviceIds];
+      if (syncData != undefined){
+        const syncDevices = syncData['payload']['devices'];
+        const syncDevicesLength = syncDevices.length;
+        for (let j = 0; j < syncDevicesLength; j++) {
+             const trait = syncDevices[j]['traits'];
+             if (trait in TRAITS_COMMANDS_PAIR){
+               const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[TRAITS_COMMANDS_PAIR[trait]]);
+                 if (validateQueryTraitStates) {
+                   return queryErrors.push(...validateQueryTraitStates);
+                 }
+             }
+          }
+        }
+      }
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
