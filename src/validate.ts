@@ -61,10 +61,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     for (let i = 0; i < syncDevicesLength; i++) {
       const traits = syncDevices[i]['traits'];
       const traitsLength = syncDevices[i]['traits'].length;
-      const attributes = syncDevices[i]['attributes'];
-      if (attributes === undefined) {
-        return validateSyncAPI;
-      }
+      const attributes = syncDevices[i]['attributes'] || {};
       for (let j = 0; j < traitsLength; j++) {
         const trait = traits[j];
         if (trait in TRAIT_ATTRIBUTES_EXPECT) {
@@ -113,25 +110,29 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const commands = apiResponse['payload']['commands'];
     const commandsLength = commands.length;
     
-   const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
+    const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
    
-   if (validateExecuteAPI === undefined){
-        for (let i = 0; i < executionLength; i++) {
-          // gets the specific command
-          const commandName = execution[i]['command'];
-          if (commandName in COMMAND_STATES_EXPECT) {
-            for (let j = 0; j < commandsLength; j++) {
-              const states = commands[j]['states'];
-              const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[commandName]);
-              if (validateExecTraitStates) {
-                executeErrors.push(...validateExecTraitStates);
-              } else {
-                return validateExecuteAPI;
-              }
-            }
+    if (validateExecuteAPI) {
+        executeErrors.push(...validateExecuteAPI);
+        return executeErrors;
+    }
+    
+    for (let i = 0; i < executionLength; i++) {
+      // gets the specific command
+      const commandName = execution[i]['command'];
+      if (commandName in COMMAND_STATES_EXPECT) {
+        for (let j = 0; j < commandsLength; j++) {
+          const states = commands[j]['states'];
+          const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[commandName]);
+          if (validateExecTraitStates) {
+            executeErrors.push(...validateExecTraitStates);
+          } else {
+            return validateExecuteAPI;
           }
         }
-   }
+      }
+    }
+
    return executeErrors.length ? executeErrors : undefined;
   } else if (responseType === 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
