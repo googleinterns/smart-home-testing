@@ -106,10 +106,6 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const execution = intentRequest['inputs'][0]['payload']['execution'];
     const executionLength = intentRequest['inputs'][0]['payload']['execution'].length;
 
-    // identifies the part of the api response to validate against a schema
-    const commands = apiResponse['payload']['commands'];
-    const commandsLength = commands.length;
-    
     const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
    
     if (validateExecuteAPI) {
@@ -117,6 +113,9 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
         return executeErrors;
     }
     
+   // identifies the part of the api response to validate against a schema
+    const commands = apiResponse['payload']['commands'];
+    const commandsLength = commands.length;
     for (let i = 0; i < executionLength; i++) {
       // gets the specific command
       const commandName = execution[i]['command'];
