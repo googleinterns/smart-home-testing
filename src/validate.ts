@@ -47,26 +47,30 @@ function responseValidation(apiResponse: object, schema: object) {
 export function validate(intentRequest: object, apiResponse: object, syncData?: object){
   const responseType = intentRequest['inputs'][0]['intent'];
   if (responseType === 'action.devices.SYNC') {
-    // validate traits with attributes schema
+    const validateSyncAPI = responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA); 
     const syncErrors : object[] = [];
-    const syncDevices = apiResponse['payload']['devices'];
-    const syncDevicesLength = syncDevices.length;
-    for (let i = 0; i < syncDevicesLength; i++) {
-      const traits = syncDevices[i]['traits'];
-      const traitsLength = syncDevices[i]['traits'].length;
-      const attributes = syncDevices[i]['attributes'];
-      if (attributes === undefined) {
-        return responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
-      }
-      for (let j = 0; j < traitsLength; j++) {
-        const trait = traits[j];
-        if (trait in TRAIT_ATTRIBUTES_EXPECT) {
-          const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
-          if (validateTraitRes) {
-            return syncErrors.push(...validateTraitRes);
+    if (validateSyncAPI === undefined){
+        const syncDevices = apiResponse['payload']['devices'];
+        const syncDevicesLength = syncDevices.length;
+        for (let i = 0; i < syncDevicesLength; i++) {
+          const traits = syncDevices[i]['traits'];
+          const traitsLength = syncDevices[i]['traits'].length;
+          const attributes = syncDevices[i]['attributes'];
+          if (attributes === undefined) {
+            return validateSyncAPI;
           }
-        }
-      }
+          for (let j = 0; j < traitsLength; j++) {
+            const trait = traits[j];
+            if (trait in TRAIT_ATTRIBUTES_EXPECT) {
+              const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
+              if (validateTraitRes) {
+                return syncErrors.push(...validateTraitRes);
+              }
+            }
+          }
+       } 
+    } else {
+        syncErrors.push(...validateSyncAPI!);
     }
     return syncErrors.length ? syncErrors : undefined;
   } else if (responseType === 'action.devices.QUERY') {
@@ -88,9 +92,9 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
                    return queryErrors.push(...validateQueryTraitStates);
                  }
              }
+          }
         }
       }
-    }
     return responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema

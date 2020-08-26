@@ -3,27 +3,25 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-const reqSync = testreq.generateSyncRequest();
-const resSync = fakeapp.onSync(reqSync);
-
+const requestSync = testreq.generateSyncRequest();
+const responseSync = fakeapp.onSync(requestSync);
 describe.only('Sync response testing suite', () => {
   // Test passes
   test('Sync Response using actions an intent handler', async () =>{
-    
-    const testlibValid = testlib.validate(reqSync, resSync);
+    const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).toBe(undefined);
   });
   // Test fails defined user sync response
   test('Sync Response using a given sync response fails', async () =>{
-    const res = require('./example.sync.response.fail.json');
-    const testlibValid = testlib.validate(reqSync, res);
+    const responseSync = require('./example.sync.response.fail.json');
+    const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).not.toBe(undefined);
   });
 
   // Test passes defined user sync response
   test('Sync Response using a given sync response passes', async () =>{
-    const res = require('./example.sync.response.json');
-    const testlibValid = testlib.validate(reqSync, res);
+    const responseSync = require('./example.sync.response.json');
+    const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).toBe(undefined);
   });
 });
@@ -44,19 +42,19 @@ const devices = [{
   },
 }];
 
-const reqQuery = testreq.generateQueryRequest(devices);
+const requestQuery = testreq.generateQueryRequest(devices);
 
 describe.only('Query response testing suite', () => {
   // Test passes
   test('Query Response passes using actions an intent handler', async () =>{
-    const resQuery = fakeapp.onQuery(reqQuery);
-    const testlibValid = testlib.validate(reqQuery, resQuery, resSync);
+    const responseQuery = fakeapp.onQuery(requestQuery);
+    const testlibValid = testlib.validate(requestQuery, responseQuery, responseSync);
     expect(testlibValid).toBe(undefined);
   });
 
   test('Query Response fails using actions a given query response', async () =>{
-    const resQuery = require('./example.query.response.fail.json');
-    const testlibValid = testlib.validate(reqQuery, resQuery, resSync);
+    const responseQuery = require('./example.query.response.fail.json');
+    const testlibValid = testlib.validate(requestQuery, responseQuery, responseSync);
     expect(testlibValid).not.toBe(undefined);
   });
 });
@@ -67,19 +65,19 @@ const execution = [{
     'on': true,
   },
 }];
-const reqExecute = testreq.generateExecuteRequest(devices, execution);
+const requestExecute = testreq.generateExecuteRequest(devices, execution);
 
 describe.only('Execute response testing suite', () => {
   // Test should pass but there is an error here right now.
   test('Execute Response using actions an intent handler', async () =>{
-    const resExecute = fakeapp.onExecute(reqExecute);
-    const testlibValid = testlib.validate(reqExecute, resExecute);
+    const responseExecute = fakeapp.onExecute(requestExecute);
+    const testlibValid = testlib.validate(requestExecute, responseExecute);
     expect(testlibValid).toBe(undefined);
   });
 
   test('Execute Response fails using actions a given query response', async () =>{
-    const resExecute = require('./example.execute.response.fail.json');
-    const testlibValid = testlib.validate(reqExecute, resExecute);
+    const responseExecute = require('./example.execute.response.fail.json');
+    const testlibValid = testlib.validate(requestExecute, responseExecute);
     expect(testlibValid).not.toBe(undefined);
   });
 });
@@ -87,9 +85,9 @@ describe.only('Execute response testing suite', () => {
 describe.only('Disconnect response testing suite', () => {
   // Test should pass but there is an error here right now.
   test('Disconnect Response using actions an intent handler', async () =>{
-    const reqDisconnect = testreq.generateDisconnectRequest();
-    const res = fakeapp.onDisconnect(reqDisconnect);
-    const testlibValid = testlib.validate(reqDisconnect, res);
+    const requestDisconnect = testreq.generateDisconnectRequest();
+    const responseDisconnect = fakeapp.onDisconnect(requestDisconnect);
+    const testlibValid = testlib.validate(requestDisconnect, responseDisconnect);
     expect(testlibValid).toBe(undefined);
   });
 });
