@@ -12,17 +12,18 @@ const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schem
 const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
 const ON_OFF_ATTRIBUTES_SCHEMA = require('../traits/onoff.attributes.schema.json');
 
+const COMMANDS = {
+    'action.devices.commands.OnOff' : 'OnOff',
+    'action.devices.traits.OnOff' : 'OnOff'
+};
+
 const COMMAND_STATES_EXPECT = {
-  'action.devices.commands.OnOff': ON_OFF_STATES_SCHEMA,
+  'OnOff': ON_OFF_STATES_SCHEMA,
 };
 
 const TRAIT_ATTRIBUTES_EXPECT = {
   'action.devices.traits.OnOff': ON_OFF_ATTRIBUTES_SCHEMA,
 };
-
-const TRAITS_COMMANDS_PAIR = {
-  'action.devices.traits.OnOff': 'action.devices.commands.OnOff',
-}
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
@@ -88,13 +89,13 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     for (let i = 0; i < devicesLength; i++) {
       const deviceIds = devices[i]['id'];
       const states = apiResponse['payload']['devices'][deviceIds];
-      if (syncData != undefined){
+      if (syncData){
         const syncDevices = syncData['payload']['devices'];
         const syncDevicesLength = syncDevices.length;
         for (let j = 0; j < syncDevicesLength; j++) {
              const trait = syncDevices[j]['traits'];
-             if (trait in TRAITS_COMMANDS_PAIR){
-               const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[TRAITS_COMMANDS_PAIR[trait]]);
+             if (trait in COMMANDS){
+               const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[COMMANDS[trait]]);
                  if (validateQueryTraitStates) {
                    queryErrors.push(...validateQueryTraitStates);
                  }
@@ -123,10 +124,10 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     for (let i = 0; i < executionLength; i++) {
       // gets the specific command
       const commandName = execution[i]['command'];
-      if (commandName in COMMAND_STATES_EXPECT) {
+      if (commandName in COMMANDS) {
         for (let j = 0; j < commandsLength; j++) {
           const states = commands[j]['states'];
-          const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[commandName]);
+          const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[COMMANDS[commandName]]);
           if (validateExecTraitStates) {
             executeErrors.push(...validateExecTraitStates);
           } else {
