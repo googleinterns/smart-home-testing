@@ -68,7 +68,7 @@ const execution = [{
 }];
 
 describe.only('Execute response testing suite', () => {
-
+  const requestExecute = testreq.generateExecuteRequest(devices, execution);  
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = require('./example.execute.response.json');
     const testlibValid = testlib.validate(requestExecute, responseExecute);
