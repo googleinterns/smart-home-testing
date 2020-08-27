@@ -30,11 +30,13 @@ import * as testreqs from '../src/requests.ts'
 ```
 If using your own fulfillment, make sure to import your app as well
 ```typescript
+//__tests__/example.test.ts 
 import * as your-app-here from '../your-app-here'
 ```
 
 Use the library functions to generate a SYNC request to pass in as a parameter to your SYNC intent handler
 ```typescript
+//__tests__/example.test.ts 
 describe.only('Sync response testing suite', () => { 
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);
@@ -45,6 +47,7 @@ describe.only('Sync response testing suite', () => {
 
 Call the validation function in the test.  
 ```typescript
+//__tests__/example.test.ts 
 describe.only('Sync response testing suite', () => {
   // Generating SYNC Requests and Responses 
   const requestSync = testreq.generateSyncRequest();
@@ -73,7 +76,7 @@ Please file an issue for bugs, missing documentation, or unexpected behavior on 
 ### ❓ Questions 
 Please visit [StackOverflow](https://stackoverflow.com/questions/tagged/actions-on-google), [Assistant Developer Community on Reddit](https://www.reddit.com/r/GoogleAssistantDev/) or [Support](https://developers.google.com/assistant/support)
 
-### Other references 
+### 🤔 Other references 
 - Actions on Google [Documentation](https://developers.google.com/assistant)
 - Actions on Google [Codelabs](https://codelabs.developers.google.com/?cat=Assistant).
 
