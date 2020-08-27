@@ -18,12 +18,13 @@ Use the package manager [npm](https://www.npmjs.com/) to install the packages us
 npm install
 ```
 
-## Usage 
+## Examples 
 As previously stated, the tests folder contains examples on how the library would interact with a developer's tests for each intent. This section will break down a simple validation test 
 further. In this example, we will be focusing on a SYNC test using the Jest framework.
 
 Import the testing library modules in your tests
 ```typescript
+//__tests__/example.test.ts 
 import * as testlib from '../src/validate.ts'
 import * as testreqs from '../src/requests.ts'
 ```
@@ -42,16 +43,17 @@ describe.only('Sync response testing suite', () => {
 });
 ```
 
-Call the validation function in the test. This takes in two parameters: requestSync and the responseSync. This will indicate to the validation function that SYNC is being called and will validate further
-SYNC intent against the current SYNC JSON Schema. 
+Call the validation function in the test.  
 ```typescript
 describe.only('Sync response testing suite', () => {
-  \\ Generating SYNC Requests and Responses 
+  // Generating SYNC Requests and Responses 
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);
   
-  \\ Validating the SYNC response 
+  // Validating the SYNC response 
   test('Sync Response using actions an intent handler', async () =>{
+    // This takes in two parameters: requestSync and the responseSync. This will indicate to the validation function that SYNC is being called and will validate further
+SYNC intent against the current SYNC JSON Schema.
     const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).toBe(undefined);
     });
