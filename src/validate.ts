@@ -126,7 +126,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       const commandName = execution[i]['command'];
       if (commandName in EXECUTE_COMMAND_STATES_EXPECT) {
         for (let j = 0; j < commandsLength; j++) {
-          const states = commands[j]['states'];
+          const states = commands[j]['states'] || {};
           const validateExecTraitStates = responseValidation(states, EXECUTE_COMMAND_STATES_EXPECT[commandName]);
           if (validateExecTraitStates) {
             executeErrors.push(...validateExecTraitStates);
