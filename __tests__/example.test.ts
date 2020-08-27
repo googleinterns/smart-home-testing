@@ -3,11 +3,10 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-const requestSync = testreq.generateSyncRequest();
-const responseSync = fakeapp.onSync(requestSync);
+
 describe.only('Sync response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
-  const responseSync = fakeapp.onSync(requestSync);    
+  const responseSync = fakeapp.onSync(requestSync);
   // Test passes
   test('Sync Response using actions an intent handler', async () =>{
     const testlibValid = testlib.validate(requestSync, responseSync);
@@ -44,10 +43,11 @@ const devices = [{
   },
 }];
 
+const requestQuery = testreq.generateQueryRequest(devices);
+
 describe.only('Query response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
-  const responseSync = fakeapp.onSync(requestSync); 
-  const requestQuery = testreq.generateQueryRequest(devices);    
+  const responseSync = fakeapp.onSync(requestSync);
   // Test passes
   test('Query Response passes using actions an intent handler', async () =>{
     const responseQuery = fakeapp.onQuery(requestQuery);
@@ -68,7 +68,6 @@ const execution = [{
     'on': true,
   },
 }];
-
 const requestExecute = testreq.generateExecuteRequest(devices, execution);
 
 describe.only('Execute response testing suite', () => {
@@ -76,9 +75,13 @@ describe.only('Execute response testing suite', () => {
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = fakeapp.onExecute(requestExecute);
     const testlibValid = testlib.validate(requestExecute, responseExecute);
-    const responseSync = require('./example.sync.response.json');
-    const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).toBe(undefined);
+  });
+
+  test('Execute Response fails using actions a given execute response', async () =>{
+    const responseExecute = require('./example.execute.response.fail.json');
+    const testlibValid = testlib.validate(requestExecute, responseExecute);
+    expect(testlibValid).not.toBe(undefined);
   });
 });
 
@@ -91,4 +94,3 @@ describe.only('Disconnect response testing suite', () => {
     expect(testlibValid).toBe(undefined);
   });
 });
-
