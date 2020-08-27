@@ -1,0 +1,22 @@
+{
+      "requestId": 123,
+      "payload": {
+        "devices": {
+          "123": {
+            "on": true,
+            "online": true,
+            "status": "SUCCESS"
+          },
+          "456": {
+            "on": "true",
+            "online": true,
+            "status": "SUCCESS",
+            "brightness": 80,
+            "color": {
+              "name": "cerulean",
+              "spectrumRGB": 31655
+            }
+          }
+        }
+      }
+}
