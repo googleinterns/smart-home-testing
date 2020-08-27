@@ -82,7 +82,6 @@ describe.only('Execute response testing suite', () => {
   });
 });
 
-
 describe.only('Disconnect response testing suite', () => {
   // Test should pass but there is an error here right now.
   test('Disconnect Response using actions an intent handler', async () =>{
