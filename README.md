@@ -52,16 +52,19 @@ describe.only('Sync response testing suite', () => {
   
   // Validating the SYNC response 
   test('Sync Response using actions an intent handler', async () =>{
-    // This takes in two parameters: requestSync and the responseSync. This will indicate to the validation function that SYNC is being called and will validate further
-SYNC intent against the current SYNC JSON Schema.
+    // This will indicate to the validation function that SYNC is being called and will validate further
+    // SYNC intent against the current SYNC JSON Schema.
     const testlibValid = testlib.validate(requestSync, responseSync);
+    
+    //If the response shows no errors, `testlibValid` will return undefined. 
+    //If there are errors, the function will return an array of errors. 
     expect(testlibValid).toBe(undefined);
     });
   });
 });
 ```
 
-If the response shows no errors, `testlibValid` will return undefined. If there are errors, the function will return an array of errors. 
+
 
 ## Contributing
 
