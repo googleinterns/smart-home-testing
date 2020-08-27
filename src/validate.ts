@@ -43,19 +43,19 @@ function responseValidation(apiResponse: object, schema: object) {
  * Identifies the response type and validates the function based on the schemas.
  * @param req Request from one of the generate request functions.
  * @param apiResponse User defined api response.
- * @param syncData? Optional parameter to help identify what schemas to use for trait validation 
+ * @param syncData? Optional parameter to help identify what schemas to use for trait validation
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
-export function validate(intentRequest: object, apiResponse: object, syncData?: object){
+export function validate(intentRequest: object, apiResponse: object, syncData?: object) {
   const responseType = intentRequest['inputs'][0]['intent'];
 
   if (responseType === 'action.devices.SYNC') {
-    const validateSyncAPI = responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA); 
+    const validateSyncAPI = responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
     const syncErrors : object[] = [];
-    
+
     if (validateSyncAPI) {
-        syncErrors.push(...validateSyncAPI);
-        return syncErrors;
+      syncErrors.push(...validateSyncAPI);
+      return syncErrors;
     }
 
     const syncDevices = apiResponse['payload']['devices'];
@@ -72,37 +72,37 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
           }
         }
       }
-   } 
+    }
     return syncErrors.length ? syncErrors : undefined;
   } else if (responseType === 'action.devices.QUERY') {
     // validate with states schema;
     const queryErrors : object[] = [];
     const devices = intentRequest['inputs'][0]['payload']['devices'];
     const devicesLength = devices.length;
-    
+
     const validateQueryAPI = responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
     if (validateQueryAPI) {
-        queryErrors.push(...validateQueryAPI);
-        return queryErrors;
-    }   
-   
+      queryErrors.push(...validateQueryAPI);
+      return queryErrors;
+    }
+
     for (let i = 0; i < devicesLength; i++) {
       const deviceIds = devices[i]['id'];
       const states = apiResponse['payload']['devices'][deviceIds];
-      if (syncData){
+      if (syncData) {
         const syncDevices = syncData['payload']['devices'];
         const syncDevicesLength = syncDevices.length;
         for (let j = 0; j < syncDevicesLength; j++) {
-             const trait = syncDevices[j]['traits'];
-             if (trait in QUERY_COMMAND_STATES_EXPECT){
-               const validateQueryTraitStates = responseValidation(states, QUERY_COMMAND_STATES_EXPECT[trait]);
-                 if (validateQueryTraitStates) {
-                   queryErrors.push(...validateQueryTraitStates);
-                 }
-             }
+          const trait = syncDevices[j]['traits'];
+          if (trait in QUERY_COMMAND_STATES_EXPECT) {
+            const validateQueryTraitStates = responseValidation(states, QUERY_COMMAND_STATES_EXPECT[trait]);
+            if (validateQueryTraitStates) {
+              queryErrors.push(...validateQueryTraitStates);
+            }
           }
         }
       }
+    }
     return queryErrors.length ? queryErrors : undefined;
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
@@ -112,13 +112,13 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     const executionLength = execution.length;
 
     const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
-   
+
     if (validateExecuteAPI) {
-        executeErrors.push(...validateExecuteAPI);
-        return executeErrors;
+      executeErrors.push(...validateExecuteAPI);
+      return executeErrors;
     }
-    
-   // identifies the part of the api response to validate against a schema
+
+    // identifies the part of the api response to validate against a schema
     const commands = apiResponse['payload']['commands'];
     const commandsLength = commands.length;
     for (let i = 0; i < executionLength; i++) {
@@ -130,12 +130,12 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
           const validateExecTraitStates = responseValidation(states, EXECUTE_COMMAND_STATES_EXPECT[commandName]);
           if (validateExecTraitStates) {
             executeErrors.push(...validateExecTraitStates);
-          } 
+          }
         }
       }
     }
-   return executeErrors.length ? executeErrors : undefined;
-  }else if (responseType === 'action.devices.DISCONNECT') {
+    return executeErrors.length ? executeErrors : undefined;
+  } else if (responseType === 'action.devices.DISCONNECT') {
     return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
   } throw new Error('Response type not valid');
 }

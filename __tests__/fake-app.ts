@@ -1,4 +1,6 @@
 'use-strict';
+import * as testlib from '../src/validate';
+import * as testreq from '../src/requests';
 
 export function onSync(body) {
   return {
@@ -140,3 +142,13 @@ export function onDisconnect(body) {
   // User unlinked their account, stop reporting state for the user
   return {};
 }
+
+describe.only('Disconnect response testing suite', () => {
+  // Test should pass but there is an error here right now.
+  test('Disconnect Response using actions an intent handler', async () =>{
+    const requestDisconnect = testreq.generateDisconnectRequest();
+    const responseDisconnect = onDisconnect(requestDisconnect);
+    const testlibValid = testlib.validate(requestDisconnect, responseDisconnect);
+    expect(testlibValid).toBe(undefined);
+  });
+});
