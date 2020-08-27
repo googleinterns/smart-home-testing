@@ -3,6 +3,8 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
+const requestSync = testreq.generateSyncRequest();
+const responseSync = fakeapp.onSync(requestSync);
 describe.only('Sync response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);    

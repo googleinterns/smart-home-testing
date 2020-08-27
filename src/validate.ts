@@ -43,7 +43,7 @@ function responseValidation(apiResponse: object, schema: object) {
  * Identifies the response type and validates the function based on the schemas.
  * @param req Request from one of the generate request functions.
  * @param apiResponse User defined api response.
- * @param syncData? Optional parameter to help identify what schemas to use for trait validation
+ * @param syncData? Optional parameter to help identify what schemas to use for trait validation 
  * @return Errors from AJV validation, if any. Undefined otherwise.
  */
 export function validate(intentRequest: object, apiResponse: object, syncData?: object){
