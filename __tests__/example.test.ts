@@ -71,13 +71,13 @@ describe.only('Execute response testing suite', () => {
   // Test should pass but there is an error here right now.
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = fakeapp.onExecute(requestExecute);
-    const testlibValid = testlib.validate(requestExecute, responseExecute);
+    const testlibValid = testlib.validate(requestExecute, responseExecute, responseSync);
     expect(testlibValid).toBe(undefined);
   });
 
   test('Execute Response fails using actions a given execute response', async () =>{
     const responseExecute = require('./example.execute.response.fail.json');
-    const testlibValid = testlib.validate(requestExecute, responseExecute);
+    const testlibValid = testlib.validate(requestExecute, responseExecute, responseSync);
     expect(testlibValid).not.toBe(undefined);
   });
 });

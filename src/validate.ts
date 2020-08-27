@@ -12,13 +12,9 @@ const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schem
 const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
 const ON_OFF_ATTRIBUTES_SCHEMA = require('../traits/onoff.attributes.schema.json');
 
-const COMMANDS = {
-    'action.devices.commands.OnOff' : 'OnOff',
-    'action.devices.traits.OnOff' : 'OnOff'
-};
 
 const COMMAND_STATES_EXPECT = {
-  'OnOff': ON_OFF_STATES_SCHEMA,
+  'action.devices.traits.OnOff': ON_OFF_STATES_SCHEMA,
 };
 
 const TRAIT_ATTRIBUTES_EXPECT = {
@@ -94,8 +90,8 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
         const syncDevicesLength = syncDevices.length;
         for (let j = 0; j < syncDevicesLength; j++) {
              const trait = syncDevices[j]['traits'];
-             if (trait in COMMANDS){
-               const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[COMMANDS[trait]]);
+             if (trait in COMMAND_STATES_EXPECT){
+               const validateQueryTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[trait]);
                  if (validateQueryTraitStates) {
                    queryErrors.push(...validateQueryTraitStates);
                  }
@@ -107,9 +103,6 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
   } else if (responseType === 'action.devices.EXECUTE') {
     // validate with states schema
     const executeErrors : object[] = [];
-    // gets the execution array from the intent request
-    const execution = intentRequest['inputs'][0]['payload']['execution'];
-    const executionLength = execution.length;
 
     const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
    
@@ -121,20 +114,25 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
    // identifies the part of the api response to validate against a schema
     const commands = apiResponse['payload']['commands'];
     const commandsLength = commands.length;
-    for (let i = 0; i < executionLength; i++) {
-      // gets the specific command
-      const commandName = execution[i]['command'];
-      if (commandName in COMMANDS) {
-        for (let j = 0; j < commandsLength; j++) {
-          const states = commands[j]['states'];
-          const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[COMMANDS[commandName]]);
-          if (validateExecTraitStates) {
-            executeErrors.push(...validateExecTraitStates);
-          } else {
-            return validateExecuteAPI;
+
+    if (syncData){
+        const syncDevices = syncData['payload']['devices'];
+        const syncDevicesLength = syncDevices.length;
+        for (let i = 0; i < syncDevicesLength; i++) {
+          const trait = syncDevices[i]['traits'];
+          // gets the specific command
+          if (trait in COMMAND_STATES_EXPECT) {
+            for (let j = 0; j < commandsLength; j++) {
+              const states = commands[j]['states'];
+              const validateExecTraitStates = responseValidation(states, COMMAND_STATES_EXPECT[trait]);
+              if (validateExecTraitStates) {
+                executeErrors.push(...validateExecTraitStates);
+              } else {
+                return validateExecuteAPI;
+              }
+            }
           }
         }
-      }
     }
 
    return executeErrors.length ? executeErrors : undefined;
