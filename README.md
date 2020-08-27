@@ -2,7 +2,11 @@
 
 ## Testing Library for Smart Home
 
-The objective is to design a scalable integration testing library for Smart Home Actions. With the enhanced logging, developers will be able to find more details about failures.
+### The problem 
+Smart home developers currently use a manual tool for testing. To solve friction in the development process, the goal is to create a way for developer's to receive more detailed information on why their errors occur.
+
+### This solution 
+The [Smart Home Integration Testing Library](https://github.com/googleinterns/smart-home-testing) introduces this solution for developers. With the enhanced logging, developers will be able to find more details about failures.
 The big impact of this will be removing friction and latency from the dev cycle, which will allow the developer to successfully verify their action more efficiently.
 
 **This repository consists of:**
