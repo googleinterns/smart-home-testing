@@ -3,7 +3,6 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-
 describe.only('Sync response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);    
@@ -75,15 +74,12 @@ describe.only('Execute response testing suite', () => {
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = fakeapp.onExecute(requestExecute);
     const testlibValid = testlib.validate(requestExecute, responseExecute);
+    const responseSync = require('./example.sync.response.json');
+    const testlibValid = testlib.validate(requestSync, responseSync);
     expect(testlibValid).toBe(undefined);
   });
-
-  test('Execute Response fails using actions a given execute response', async () =>{
-    const responseExecute = require('./example.execute.response.fail.json');
-    const testlibValid = testlib.validate(requestExecute, responseExecute);
-    expect(testlibValid).not.toBe(undefined);
-  });
 });
+
 
 describe.only('Disconnect response testing suite', () => {
   // Test should pass but there is an error here right now.
@@ -91,6 +87,7 @@ describe.only('Disconnect response testing suite', () => {
     const requestDisconnect = testreq.generateDisconnectRequest();
     const responseDisconnect = fakeapp.onDisconnect(requestDisconnect);
     const testlibValid = testlib.validate(requestDisconnect, responseDisconnect);
+    expect(testlibValid).toBe(undefined);
   });
 });
 
