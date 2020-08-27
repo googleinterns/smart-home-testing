@@ -3,7 +3,6 @@ import * as testlib from '../src/validate';
 import * as testreq from '../src/requests';
 import * as fakeapp from './fake-app';
 
-
 describe.only('Sync response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);
@@ -43,11 +42,11 @@ const devices = [{
   },
 }];
 
-const requestQuery = testreq.generateQueryRequest(devices);
 
 describe.only('Query response testing suite', () => {
   const requestSync = testreq.generateSyncRequest();
   const responseSync = fakeapp.onSync(requestSync);
+  const requestQuery = testreq.generateQueryRequest(devices);
   // Test passes
   test('Query Response passes using actions an intent handler', async () =>{
     const responseQuery = fakeapp.onQuery(requestQuery);
@@ -74,13 +73,13 @@ describe.only('Execute response testing suite', () => {
   // Test should pass but there is an error here right now.
   test('Execute Response using actions an intent handler', async () =>{
     const responseExecute = fakeapp.onExecute(requestExecute);
-    const testlibValid = testlib.validate(requestExecute, responseExecute);
+    const testlibValid = testlib.validate(requestExecute, responseExecute, responseSync);
     expect(testlibValid).toBe(undefined);
   });
 
   test('Execute Response fails using actions a given execute response', async () =>{
     const responseExecute = require('./example.execute.response.fail.json');
-    const testlibValid = testlib.validate(requestExecute, responseExecute);
+    const testlibValid = testlib.validate(requestExecute, responseExecute, responseSync);
     expect(testlibValid).not.toBe(undefined);
   });
 });
