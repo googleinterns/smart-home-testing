@@ -1,6 +1,4 @@
 'use-strict';
-import * as testlib from '../src/validate';
-import * as testreq from '../src/requests';
 
 export function onSync(body) {
   return {

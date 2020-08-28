@@ -1,5 +1,5 @@
 'use-strict';
-import {testlib, testreq} from './src'
+import {testlib, testreq} from '../src';
 import * as fakeapp from './fake-app';
 
 describe.only('Sync response testing suite', () => {
