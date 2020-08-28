@@ -31,7 +31,7 @@ further. In this example, we will be focusing on a SYNC test using the Jest fram
 Import the testing library modules in your tests
 ```typescript
 //__tests__/example.test.ts 
-import { testlib, testreqs } from './src'
+import { testlib, testreqs } from 'smart-home-testing'
 ```
 If using your own fulfillment, make sure to import your app as well
 ```typescript
