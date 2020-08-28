@@ -19,6 +19,8 @@ The big impact of this will be removing friction and latency from the dev cycle,
 Use the package manager [npm](https://www.npmjs.com/) to install the packages used for the testing library 
 
 ```bash
+git clone https://github.com/googleinterns/smart-home-testing.git
+cd smart-home-testing
 npm install
 ```
 
@@ -29,8 +31,7 @@ further. In this example, we will be focusing on a SYNC test using the Jest fram
 Import the testing library modules in your tests
 ```typescript
 //__tests__/example.test.ts 
-import * as testlib from '../src/validate.ts'
-import * as testreqs from '../src/requests.ts'
+import { testlib, testreqs } from './src'
 ```
 If using your own fulfillment, make sure to import your app as well
 ```typescript
