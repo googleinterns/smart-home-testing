@@ -1,2 +1,2 @@
-export {validate} from './testlib';
-export * from './testreq';
+export * as testlib from './testlib';
+export * as testreq from './testreq';
