@@ -16,7 +16,8 @@ function getIntentSchema(intentName: string, schemaType: string): object | undef
   try {
     const shortIntent = intentName.split('.').pop()?.toLowerCase() || 'unknown';
     const filename = `${shortIntent}.${schemaType}.schema.json`;
-    return require(path.join('../schema/intents', shortIntent, filename));
+    const basePath = path.join(__dirname, '../schema/intents');
+    return require(path.join(basePath, shortIntent, filename));
   } catch (error) {
     console.error(error);
     return undefined;
@@ -32,7 +33,8 @@ function getTraitSchema(traitName: string, schemaType: string): object | undefin
   try {
     const shortTrait = traitName.split('.').pop()?.toLowerCase() || 'unknown';
     const filename = `${shortTrait}.${schemaType}.schema.json`;
-    return require(path.join('../schema/traits', shortTrait, filename));
+    const basePath = path.join(__dirname, '../schema/traits');
+    return require(path.join(basePath, shortTrait, filename));
   } catch (error) {
     console.error(traitName, error);
     return undefined;
@@ -49,7 +51,7 @@ function getCommandSchema(commandName: string, schemaType: string): object| unde
     const shortTrait = findEnclosingTrait(commandName, schemaType) || 'unknown';
     const shortCommand = commandName.split('.').pop()?.toLowerCase() || 'unknown';
     const filename = `${shortCommand}.${schemaType}.schema.json`;
-    const basePath = '../schema/traits';
+    const basePath = path.join(__dirname, '../schema/traits');
     return require(path.join(basePath, shortTrait, filename));
   } catch (error) {
     console.error(error);
@@ -68,7 +70,7 @@ function findEnclosingTrait(commandName: string, schemaType: string) {
     const filename = `${shortCommand}.${schemaType}.schema.json`;
     const basePath = path.join(__dirname, '../schema/traits');
     return fs.readdirSync(basePath).find((entry) =>
-      fs.readdirSync(path.join(basePath, entry)).includes(filename)
+      fs.existsSync(path.join(basePath, entry, filename))
     );
   } catch (error) {
     console.error(error);
@@ -117,7 +119,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       const attributes = syncDevices[i]['attributes'] || {};
       for (let j = 0; j < traits.length; j++) {
         const trait = traits[j];
-        const schema = getTraitSchema(trait,'attributes');
+        const schema = getTraitSchema(trait, 'attributes');
         if (schema) {
           const validateTraitRes = responseValidation(attributes, schema);
           if (validateTraitRes) {
@@ -148,7 +150,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
         const traits = device['traits'];
           for (let j = 0; j < traits.length; j++) {
             const trait = traits[j];
-            const schema = getTraitSchema(trait,'states');
+            const schema = getTraitSchema(trait, 'states');
             if (schema) {
               const validateQueryTraitStates = responseValidation(states, schema);
               if (validateQueryTraitStates) {
