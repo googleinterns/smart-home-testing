@@ -1,29 +1,80 @@
 'use-strict';
 import * as Ajv from 'ajv';
+import * as path from 'path';
+import * as fs from 'fs';
 
 const ajv = new Ajv({
   allErrors: true,
 });
 
-const SYNC_RESPONSE_SCHEMA = require('../intents/sync.response.schema.json');
-const QUERY_RESPONSE_SCHEMA = require('../intents/query.response.schema.json');
-const EXECUTE_RESPONSE_SCHEMA = require('../intents/execute.response.schema.json');
-const DISCONNECT_RESPONSE_SCHEMA = require('../intents/disconnect.response.schema.json');
-const ON_OFF_STATES_SCHEMA = require('../traits/onoff.states.schema.json');
-const ON_OFF_ATTRIBUTES_SCHEMA = require('../traits/onoff.attributes.schema.json');
+/**
+ * Retrieve the JSON schema for the given intent.
+ * @param intentName FQN of the intent
+ * @param schemaType One of 'request' or 'response'
+ */
+function getIntentSchema(intentName: string, schemaType: string): object | undefined {
+  try {
+    const shortIntent = intentName.split('.').pop()?.toLowerCase() || 'unknown';
+    const filename = `${shortIntent}.${schemaType}.schema.json`;
+    return require(path.join('../schema/intents', shortIntent, filename));
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
 
+/**
+ * Retrieve the JSON schema for the given device trait.
+ * @param traitName FQN of the device trait
+ * @param schemaType One of 'attributes' or 'states'
+ */
+function getTraitSchema(traitName: string, schemaType: string): object | undefined {
+  try {
+    const shortTrait = traitName.split('.').pop()?.toLowerCase() || 'unknown';
+    const filename = `${shortTrait}.${schemaType}.schema.json`;
+    return require(path.join('../schema/traits', shortTrait, filename));
+  } catch (error) {
+    console.error(traitName, error);
+    return undefined;
+  }
+}
 
-const QUERY_COMMAND_STATES_EXPECT = {
-  'action.devices.traits.OnOff': ON_OFF_STATES_SCHEMA,
-};
+/**
+ * Retrieve JSON schema for the given device command
+ * @param commandName FQN of the device command
+ * @param schemaType One of 'params' or 'results'
+ */
+function getCommandSchema(commandName: string, schemaType: string): object| undefined {
+  try {
+    const shortTrait = findEnclosingTrait(commandName, schemaType) || 'unknown';
+    const shortCommand = commandName.split('.').pop()?.toLowerCase() || 'unknown';
+    const filename = `${shortCommand}.${schemaType}.schema.json`;
+    const basePath = '../schema/traits';
+    return require(path.join(basePath, shortTrait, filename));
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
 
-const EXECUTE_COMMAND_STATES_EXPECT = {
-  'action.devices.commands.OnOff': ON_OFF_STATES_SCHEMA,
-};
-
-const TRAIT_ATTRIBUTES_EXPECT = {
-  'action.devices.traits.OnOff': ON_OFF_ATTRIBUTES_SCHEMA,
-};
+/**
+ * Helper function to search for matching trait directory
+ * @param commandName
+ * @param schemaType
+ */
+function findEnclosingTrait(commandName: string, schemaType: string) {
+  try {
+    const shortCommand = commandName.split('.').pop()?.toLowerCase() || 'unknown';
+    const filename = `${shortCommand}.${schemaType}.schema.json`;
+    const basePath = path.join(__dirname, '../schema/traits');
+    return fs.readdirSync(basePath).find((entry) =>
+      fs.readdirSync(path.join(basePath, entry)).includes(filename)
+    );
+  } catch (error) {
+    console.error(error);
+    return undefined;
+  }
+}
 
 /**
  * Helper function that uses AJV library to validate the response against the schema
@@ -49,8 +100,9 @@ function responseValidation(apiResponse: object, schema: object) {
 export function validate(intentRequest: object, apiResponse: object, syncData?: object) {
   const responseType = intentRequest['inputs'][0]['intent'];
 
-  if (responseType === 'action.devices.SYNC') {
-    const validateSyncAPI = responseValidation(apiResponse, SYNC_RESPONSE_SCHEMA);
+  const responseSchema = getIntentSchema(responseType, 'response');
+  if (responseType === 'action.devices.SYNC' && responseSchema) {
+    const validateSyncAPI = responseValidation(apiResponse, responseSchema);
     const syncErrors : object[] = [];
 
     if (validateSyncAPI) {
@@ -65,8 +117,9 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       const attributes = syncDevices[i]['attributes'] || {};
       for (let j = 0; j < traits.length; j++) {
         const trait = traits[j];
-        if (trait in TRAIT_ATTRIBUTES_EXPECT) {
-          const validateTraitRes = responseValidation(attributes, TRAIT_ATTRIBUTES_EXPECT[trait]);
+        const schema = getTraitSchema(trait,'attributes');
+        if (schema) {
+          const validateTraitRes = responseValidation(attributes, schema);
           if (validateTraitRes) {
             syncErrors.push(...validateTraitRes);
           }
@@ -74,13 +127,13 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       }
     }
     return syncErrors.length ? syncErrors : undefined;
-  } else if (responseType === 'action.devices.QUERY') {
+  } else if (responseType === 'action.devices.QUERY' && responseSchema) {
     // validate with states schema;
     const queryErrors : object[] = [];
     const devices = intentRequest['inputs'][0]['payload']['devices'];
     const devicesLength = devices.length;
 
-    const validateQueryAPI = responseValidation(apiResponse, QUERY_RESPONSE_SCHEMA);
+    const validateQueryAPI = responseValidation(apiResponse, responseSchema);
     if (validateQueryAPI) {
       queryErrors.push(...validateQueryAPI);
       return queryErrors;
@@ -91,27 +144,29 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       const states = apiResponse['payload']['devices'][deviceIds];
       if (syncData) {
         const syncDevices = syncData['payload']['devices'];
-        const syncDevicesLength = syncDevices.length;
-        for (let j = 0; j < syncDevicesLength; j++) {
-          const trait = syncDevices[j]['traits'];
-          if (trait in QUERY_COMMAND_STATES_EXPECT) {
-            const validateQueryTraitStates = responseValidation(states, QUERY_COMMAND_STATES_EXPECT[trait]);
-            if (validateQueryTraitStates) {
-              queryErrors.push(...validateQueryTraitStates);
+        const device = syncDevices.find((entry) => entry['id'] === deviceIds);
+        const traits = device['traits'];
+          for (let j = 0; j < traits.length; j++) {
+            const trait = traits[j];
+            const schema = getTraitSchema(trait,'states');
+            if (schema) {
+              const validateQueryTraitStates = responseValidation(states, schema);
+              if (validateQueryTraitStates) {
+                queryErrors.push(...validateQueryTraitStates);
+              }
             }
           }
-        }
       }
     }
     return queryErrors.length ? queryErrors : undefined;
-  } else if (responseType === 'action.devices.EXECUTE') {
+  } else if (responseType === 'action.devices.EXECUTE' && responseSchema) {
     // validate with states schema
     const executeErrors : object[] = [];
     // gets the execution array from the intent request
     const execution = intentRequest['inputs'][0]['payload']['execution'];
     const executionLength = execution.length;
 
-    const validateExecuteAPI = responseValidation(apiResponse, EXECUTE_RESPONSE_SCHEMA);
+    const validateExecuteAPI = responseValidation(apiResponse, responseSchema);
 
     if (validateExecuteAPI) {
       executeErrors.push(...validateExecuteAPI);
@@ -124,10 +179,12 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     for (let i = 0; i < executionLength; i++) {
       // gets the specific command
       const commandName = execution[i]['command'];
-      if (commandName in EXECUTE_COMMAND_STATES_EXPECT) {
+      const traitName = findEnclosingTrait(commandName, 'params') || 'unknown';
+      const schema = getTraitSchema(traitName, 'states');
+      if (schema) {
         for (let j = 0; j < commandsLength; j++) {
           const states = commands[j]['states'] || {};
-          const validateExecTraitStates = responseValidation(states, EXECUTE_COMMAND_STATES_EXPECT[commandName]);
+          const validateExecTraitStates = responseValidation(states, schema);
           if (validateExecTraitStates) {
             executeErrors.push(...validateExecTraitStates);
           }
@@ -135,7 +192,7 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
       }
     }
     return executeErrors.length ? executeErrors : undefined;
-  } else if (responseType === 'action.devices.DISCONNECT') {
-    return responseValidation(apiResponse, DISCONNECT_RESPONSE_SCHEMA);
+  } else if (responseType === 'action.devices.DISCONNECT' && responseSchema) {
+    return responseValidation(apiResponse, responseSchema);
   } throw new Error('Response type not valid');
 }

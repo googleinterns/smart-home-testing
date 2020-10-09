@@ -100,8 +100,7 @@ export function onQuery(body) {
           'status': 'SUCCESS',
           'brightness': 80,
           'color': {
-            'name': 'cerulean',
-            'spectrumRGB': 31655,
+            'spectrumRgb': 31655,
           },
         },
       },
