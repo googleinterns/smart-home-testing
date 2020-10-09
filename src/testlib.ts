@@ -192,7 +192,8 @@ export function validate(intentRequest: object, apiResponse: object, syncData?: 
     // validate with states schema
     const executeErrors : object[] = [];
     // gets the execution array from the intent request
-    const execution = intentRequest['inputs'][0]['payload']['execution'];
+    const command = intentRequest['inputs'][0]['payload']['commands'][0];
+    const execution = command['execution'];
     const executionLength = execution.length;
 
     const validateExecuteAPI = responseValidation(apiResponse, responseSchema);

@@ -69,8 +69,10 @@ interface Command {
 interface ExecuteInput {
   intent: string;
   payload: {
-    devices: Device[];
-    execution: Command[];
+    commands: [{
+      devices: Device[];
+      execution: Command[];
+    }]
   };
 }
 
@@ -96,8 +98,10 @@ export function generateExecuteRequest(
       {
         intent: 'action.devices.EXECUTE',
         payload: {
-          devices,
-          execution,
+          commands: [{
+            devices,
+            execution,
+          }]
         },
       },
     ],
